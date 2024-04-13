@@ -23,10 +23,10 @@ trait CraftilyHandlesDatabase
             );
         }
 
-        // TODO create a helper that validates arrays for being associative and then choosing key and value types 
-        if (!is_array($defaultProperties) || count($defaultProperties) === 0) {
+        // TODO create a helper that validates arrays for being associative and then choosing key and value types
+        if (! is_array($defaultProperties) || count($defaultProperties) === 0) {
             throw new CraftyConfigurationException(
-                "Database insertion default properties must be a filled array containing the essentials such as created_at, updated_at, etc."
+                'Database insertion default properties must be a filled array containing the essentials such as created_at, updated_at, etc.'
             );
         }
 
@@ -38,8 +38,8 @@ trait CraftilyHandlesDatabase
                 $data = array_map(function ($dataArray) use ($tableName, $callback, $columnNames, $defaultProperties) {
                     $callbackData = $callback($dataArray);
 
-                    if (!is_array($callbackData)) {
-                        throw new CraftyChunkedDatabaseInsertCallbackException("The callback must return an array for each data arrays item.");
+                    if (! is_array($callbackData)) {
+                        throw new CraftyChunkedDatabaseInsertCallbackException('The callback must return an array for each data arrays item.');
                     }
 
                     $validatedData = array_filter($callbackData, function ($key) use ($columnNames) {

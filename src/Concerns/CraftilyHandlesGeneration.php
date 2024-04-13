@@ -10,10 +10,10 @@ trait CraftilyHandlesGeneration
     {
         $separator = config('crafty.string_hash_separator');
 
-        if (!is_string($separator) || empty($separator)) {
-            throw new CraftyConfigurationException("String-hash separator must be a filled string.");
+        if (! is_string($separator) || empty($separator)) {
+            throw new CraftyConfigurationException('String-hash separator must be a filled string.');
         }
 
-        return $string . $separator . unique_meta_hashing_number($string);
+        return $string.$separator.unique_meta_hashing_number($string);
     }
 }

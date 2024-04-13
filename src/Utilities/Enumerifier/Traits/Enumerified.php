@@ -2,12 +2,12 @@
 
 namespace VPremiss\Crafty\Support\Enumerifier\Traits;
 
-use VPremiss\Crafty\Support\Enumerifier\Exceptions\NotAnEnumException;
+use Illuminate\Support\Collection;
 use VPremiss\Crafty\Support\Enumerifier\Exceptions\DuplicateEnumsException;
 use VPremiss\Crafty\Support\Enumerifier\Exceptions\ExcludedAllEnumsException;
 use VPremiss\Crafty\Support\Enumerifier\Exceptions\InsufficientAmountException;
 use VPremiss\Crafty\Support\Enumerifier\Exceptions\NoEnumCasesFoundException;
-use Illuminate\Support\Collection;
+use VPremiss\Crafty\Support\Enumerifier\Exceptions\NotAnEnumException;
 
 trait Enumerified
 {
@@ -30,7 +30,7 @@ trait Enumerified
         if ($amount < 1) {
             throw new InsufficientAmountException('The amount should be at least one.');
         }
-        
+
         self::checkForCases();
 
         $exceptFor = [...$exceptFor];
@@ -102,7 +102,7 @@ trait Enumerified
     private static function validatedEnums(array $enums): array
     {
         foreach ($enums as $enum) {
-            if (!$enum instanceof self) {
+            if (! $enum instanceof self) {
                 throw new NotAnEnumException('Not an enum instance was detected.');
             }
         }
@@ -113,7 +113,7 @@ trait Enumerified
         }
 
         $allCasesValues = array_map(fn ($case) => $case->value, self::cases());
-        if (count($enumValues) === count($allCasesValues) && !array_diff($allCasesValues, $enumValues)) {
+        if (count($enumValues) === count($allCasesValues) && ! array_diff($allCasesValues, $enumValues)) {
             throw new ExcludedAllEnumsException('All possible enum cases were excluded!');
         }
 

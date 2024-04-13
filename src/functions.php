@@ -12,7 +12,7 @@ if (function_exists('is_enum')) {
 } else {
     function is_enum(mixed $enum): bool
     {
-        if (!is_object($enum)) {
+        if (! is_object($enum)) {
             return false;
         }
 
@@ -45,10 +45,10 @@ if (function_exists('unique_meta_hashing_number')) {
             );
         }
 
-        $uniqueString = $string . uniqid() . rand(100, 999);
+        $uniqueString = $string.uniqid().rand(100, 999);
         $hash = md5($uniqueString);
         $numericHash = hexdec(substr($hash, 0, $digits)) % 100000000;
-        $shortHash = str_pad((string)$numericHash, $digits, '0', STR_PAD_LEFT);
+        $shortHash = str_pad((string) $numericHash, $digits, '0', STR_PAD_LEFT);
 
         return $shortHash;
     }
