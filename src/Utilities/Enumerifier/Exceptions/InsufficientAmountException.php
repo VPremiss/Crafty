@@ -1,6 +1,6 @@
 <?php
 
-namespace VPremiss\Crafty\Support\Enumerifier\Exceptions;
+namespace VPremiss\Crafty\Utilities\Enumerifier\Exceptions;
 
 use Exception;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace VPremiss\Crafty\Support\Enumerifier\Traits;
+namespace VPremiss\Crafty\Utilities\Enumerifier\Traits;
 
 use Illuminate\Support\Collection;
-use VPremiss\Crafty\Support\Enumerifier\Exceptions\DuplicateEnumsException;
-use VPremiss\Crafty\Support\Enumerifier\Exceptions\ExcludedAllEnumsException;
-use VPremiss\Crafty\Support\Enumerifier\Exceptions\InsufficientAmountException;
-use VPremiss\Crafty\Support\Enumerifier\Exceptions\NoEnumCasesFoundException;
-use VPremiss\Crafty\Support\Enumerifier\Exceptions\NotAnEnumException;
+use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\DuplicateEnumsException;
+use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\ExcludedAllEnumsException;
+use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\InsufficientAmountException;
+use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\NoEnumCasesFoundException;
+use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\NotAnEnumException;
 
 trait Enumerified
 {
