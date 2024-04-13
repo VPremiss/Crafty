@@ -6,7 +6,7 @@ use VPremiss\Crafty\Support\Enums\EncodingType;
 
 trait CraftilyHandlesManipulation
 {
-    public static function reverseString(string $string, EncodingType $encoding = EncodingType::UTF8): string
+    public function reverseString(string $string, EncodingType $encoding = EncodingType::UTF8): string
     {
         $encodingValue = $encoding->value;
         $result = '';

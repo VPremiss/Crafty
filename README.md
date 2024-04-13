@@ -36,34 +36,34 @@ Contains a helper main service class with separated concerns for its static meth
 
 Below are the tables of all the `Crafty` package helpers:
 
-### Traits
+<br/>
 
-| Trait          | Description                                                                               |
+| **Trait**          | Description                                                                               |
 |----------------|-------------------------------------------------------------------------------------------|
 | `Enumerified`  | Extends enum functionality to retrieve counts, random instances, and enum collections.    |
 
-### Laravel Rules
+<br/>
 
-| Rule         | Description                                                                                               |
+| **Laravel Rule**         | Description                                                                                               |
 |--------------|-----------------------------------------------------------------------------------------------------------|
 | `EnumsArray` | A validation rule that ensures an attribute is a filled array of valid enum values from a specified class.|
 
-### Facade Methods
+<br/>
 
-| Method                                                              | Description                                                                                             |
+| **Facade Method**                                                              | Description                                                                                             |
 |---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `chunkedDatabaseInsertion(string $tableName, array $dataArrays, Closure $callback): void` | Handles database insertions in chunks with configurable chunk size and default properties.             |
 | `uniquelySuffixed(string $string): string`                          | Appends a unique hash suffix to a string.                                                               |
 | `reverseString(string $string, EncodingType $encoding = EncodingType::UTF8): string` | Reverses a string according to the specified encoding type.                                             |
 
-### Global Functions
+<br/>
 
-| Function              | Description                                                                |
+| **Global Function**              | Description                                                                |
 |-----------------------|----------------------------------------------------------------------------|
 | `is_enum(mixed $enum)`| Checks if the provided value is an instance of an enum.                    |
 | `unique_meta_hashing_number(string $string, ?int $digits = null)` | Generates a unique hash number based on the input string and optional digit limit. **Not for security purposes**, merely for general meta information tagging. |
 
-
+<br/>
 
 
 ### Changelogs

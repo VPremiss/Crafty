@@ -11,7 +11,7 @@ use VPremiss\Crafty\Exceptions\CraftyConfigurationException;
 
 trait CraftilyHandlesDatabase
 {
-    public static function chunkedDatabaseInsertion(string $tableName, array $dataArrays, Closure $callback): void
+    public function chunkedDatabaseInsertion(string $tableName, array $dataArrays, Closure $callback): void
     {
         $chunksCount = config('crafty.databasing_chunks', 500);
         $defaultProperties = config('crafty.insertion_default_properties');

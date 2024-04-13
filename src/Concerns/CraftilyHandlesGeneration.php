@@ -6,7 +6,7 @@ use VPremiss\Crafty\Exceptions\CraftyConfigurationException;
 
 trait CraftilyHandlesGeneration
 {
-    public static function uniquelySuffixed(string $string): string
+    public function uniquelySuffixed(string $string): string
     {
         $separator = config('crafty.string_hash_separator');
 
