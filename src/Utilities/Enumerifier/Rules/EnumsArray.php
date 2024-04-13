@@ -1,6 +1,6 @@
 <?php
 
-namespace VPremiss\Crafty\Support\Enumerifier\Rules;
+namespace VPremiss\Crafty\Utilities\Enumerifier\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
