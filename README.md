@@ -4,7 +4,7 @@
 
 # Crafty
 
-Some essentials to rely on for [TALL stack](https://tallstack.dev) development.
+Some essential helpers to rely on during [TALL stack](https://tallstack.dev) development.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=flat-square)](https://packagist.org/packages/vpremiss/crafty)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -14,7 +14,7 @@ Some essentials to rely on for [TALL stack](https://tallstack.dev) development.
 
 ## Description
 
-Contains a helper main service class with separated concerns for its static methods. Plus a global functions for quick helpers as well... The things that we find ourselves needing and not have a "strong" reason to PR [Laravel](https://laravel.com) about.
+Contains a helper main service class (that you can use as a [Laravel facade](https://laravel.com/docs/facades)) with separated concerns for its methods. Plus some global helper functions for quick actions as well... The things that we find ourselves needing and not have a "strong" reason to PR Laravel about.
 
 
 ## Installation
@@ -22,10 +22,10 @@ Contains a helper main service class with separated concerns for its static meth
 - Install the package via [composer](https://getcomposer.org):
 
   ```bash
-  composer require vpremiss/crafty
+  composer require VPremiss/Crafty
   ```
 
-- Publish the [config file](config/crafty.php) using this Artisan command:
+- Publish the [config file](config/crafty.php) using this [Artisan](https://laravel.com/docs/artisan) command:
 
   ```bash
   php artisan vendor:publish --tag="crafty-config"
@@ -68,12 +68,14 @@ Below are the tables of all the `Crafty` package helpers:
 
 ### Changelogs
 
-You can check out the [[CHANGELOG.md]](CHANGELOG.md) file to track down all the package updates.
+You can check out the package's [changelogs](https://app.whatthediff.ai/changelog/github/VPremiss/Crafty) online via the [WTD](https://whatthediff.ai) AI app.
 
 
 ## Support
 
-Support the maintenance as well as the development of [other projects](https://github.com/sponsors/VPremiss) through sponsorship or one-time [donations](https://github.com/sponsors/VPremiss?frequency=one-time&sponsor=VPremiss).
+Support ongoing package maintenance as well as the development of **other projects** through [sponsorship](https://github.com/sponsors/VPremiss) or one-time [donations](https://github.com/sponsors/VPremiss?frequency=one-time&sponsor=VPremiss) if you prefer.
+
+And may Allah accept your strive; aameen.
 
 ### License
 
@@ -83,6 +85,8 @@ This package is open-sourced software licensed under the [MIT license](LICENSE.m
 
 - [ChatGPT](https://chat.openai.com)
 - [Laravel](https://github.com/Laravel)
+- [Spatie](https://github.com/spatie)
+- [WTD](https://whatthediff.ai)
 - [All Contributors](../../contributors)
 
 
