@@ -1,10 +1,11 @@
 {
     "name": "vpremiss/crafty",
-    "description": "Some essentials to rely on for TALL stack development.",
+    "description": "Some essential helpers to rely on during TALL stack development.",
     "keywords": [
-        "VPremiss",
         "laravel",
-        "crafty"
+        "vpremiss",
+        "crafty",
+        "helpers"
     ],
     "homepage": "https://github.com/VPremiss/Crafty",
     "license": "MIT",
@@ -42,21 +43,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "VPremiss\\Crafty\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "VPremiss\\Crafty\\Tests\\": "tests/"
         }
     },
     "scripts": {
-        "clear": "@php vendor/bin/testbench package:purge-crafty --ansi",
-        "build": [
-            "@composer run prepare",
-            "@php vendor/bin/testbench workbench:build --ansi"
-        ],
-        "start": [
-            "Composer\\Config::disableProcessTimeout",
-            "@composer run build",
-            "@php vendor/bin/testbench serve"
-        ],
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
