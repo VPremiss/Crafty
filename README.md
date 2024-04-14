@@ -68,7 +68,7 @@ Below are the tables of all the `Crafty` package helpers:
 
 ### Changelogs
 
-You can check out the package's [changelogs](https://app.whatthediff.ai/changelog/github/VPremiss/Crafty) online via the [WTD](https://whatthediff.ai) AI app.
+You can check out the package's [changelogs](https://app.whatthediff.ai/changelog/github/VPremiss/Crafty) online via WTD.
 
 
 ## Support
