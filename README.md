@@ -53,7 +53,7 @@ Below are the tables of all the `Crafty` package helpers:
 | **Facade Method**                                                              | Description                                                                                             |
 |---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `chunkedDatabaseInsertion(string $tableName, array $dataArrays, Closure $callback): void` | Handles database insertions in chunks with configurable chunk size and default properties.             |
-| `uniquelySuffixed(string $string): string`                          | Appends a unique hash suffix to a string.                                                               |
+| `uniquelyMetaHashSuffixed(string $string): string`                          | Appends a unique hash suffix to a string. Utilizes the global helper function `unique_meta_hashing_number` of this same package.                                                               |
 | `reverseString(string $string, EncodingType $encoding = EncodingType::UTF8): string` | Reverses a string according to the specified encoding type.                                             |
 
 <br/>
