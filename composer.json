@@ -2,9 +2,10 @@
     "name": "vpremiss/crafty",
     "description": "Some essential helpers to rely on during TALL stack development.",
     "keywords": [
-        "laravel",
         "vpremiss",
         "crafty",
+        "laravel",
+        "tallstack",
         "helpers"
     ],
     "homepage": "https://github.com/VPremiss/Crafty",
