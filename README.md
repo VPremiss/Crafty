@@ -50,7 +50,7 @@ Below are the tables of all the `Crafty` package helpers:
 
 <br/>
 
-| **Facade Method**                                                              | Description                                                                                             |
+| **Crafty Facade Method**                                                              | Description                                                                                             |
 |---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `chunkedDatabaseInsertion(string $tableName, array $dataArrays, Closure $callback): void` | Handles database insertions in chunks with configurable chunk size and default properties.             |
 | `uniquelyMetaHashSuffixed(string $string): string`                          | Appends a unique hash suffix to a string. Utilizes the global helper function `unique_meta_hashing_number` of this same package.                                                               |
@@ -88,6 +88,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE.m
 - [Spatie](https://github.com/spatie)
 - [WTD](https://whatthediff.ai)
 - [All Contributors](../../contributors)
+- And the generous individuals that we've learned from and been supported by throughout our journey...
 
 
 <div align="center">
