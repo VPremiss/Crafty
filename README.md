@@ -6,10 +6,9 @@
 
 Some essential helpers to rely on during [TALL stack](https://tallstack.dev) development.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=flat-square)](https://packagist.org/packages/vpremiss/crafty)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/vpremiss/crafty/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=flat-square)](https://packagist.org/packages/vpremiss/crafty)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=for-the-badge)](https://packagist.org/packages/vpremiss/crafty)
+[![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=for-the-badge&color=darkgoldenrod)](https://packagist.org/packages/vpremiss/crafty)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=for-the-badge&color=darkgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
 
 
 ## Description
