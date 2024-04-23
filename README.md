@@ -7,13 +7,13 @@
 Some essential helpers to rely on during [TALL stack](https://tallstack.dev) development.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=for-the-badge)](https://packagist.org/packages/vpremiss/crafty)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=for-the-badge&color=forestgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=for-the-badge&color=darkgoldenrod)](https://packagist.org/packages/vpremiss/crafty)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=for-the-badge&color=darkgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
 
 
 ## Description
 
-Contains a helper main service class (that you can use as a [Laravel facade](https://laravel.com/docs/facades)) with separated concerns for its methods. Plus some global helper functions for quick actions as well... The things that we find ourselves needing and not have a "strong" reason to PR Laravel about.
+Contains a helper main service class (that you can use as a [Laravel facade](https://laravel.com/docs/facades)). Plus some global helper functions for quick actions as well... For the things that we find ourselves needing and without having a "strong" reason to PR Laravel about.
 
 
 ## Installation
@@ -34,6 +34,12 @@ Contains a helper main service class (that you can use as a [Laravel facade](htt
 ## API
 
 Below are the tables of all the `Crafty` package helpers:
+
+<br/>
+
+| **Interface**          | Description                                                                               |
+|----------------|-------------------------------------------------------------------------------------------|
+| `Configurated`  | Ensures that the package service provider is dealing with configuration [internally](src/CraftyServiceProvider.php#26). -Making it compatible to be used in other packages and tests!    |
 
 <br/>
 
@@ -61,6 +67,7 @@ Below are the tables of all the `Crafty` package helpers:
 |-----------------------|----------------------------------------------------------------------------|
 | `is_enum(mixed $enum)`| Checks if the provided value is an instance of an enum.                    |
 | `unique_meta_hashing_number(string $string, ?int $digits = null)` | Generates a unique hash number based on the input string and optional digit limit. **Not for security purposes**, merely for general meta information tagging. |
+| `validated_config(string $packageServiceProviderNamespace, string $configKey)` | Return the package configuration value gracefully. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface methods properly. |
 
 <br/>
 

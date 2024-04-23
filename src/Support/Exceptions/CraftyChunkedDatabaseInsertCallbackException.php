@@ -1,6 +1,8 @@
 <?php
 
-namespace VPremiss\Crafty\Exceptions;
+declare(strict_types=1);
+
+namespace VPremiss\Crafty\Support\Exceptions;
 
 use Exception;
 
