@@ -1,7 +1,7 @@
 <?php
 
 use VPremiss\Crafty\CraftyServiceProvider;
-use VPremiss\Crafty\Exceptions\CraftyFunctionDoesNotExistException;
+use VPremiss\Crafty\Support\Exceptions\CraftyFunctionDoesNotExistException;
 use VPremiss\Crafty\Utilities\Configurated\Exceptions\ConfiguratedValidatedConfigurationException;
 use VPremiss\Crafty\Utilities\Configurated\Interfaces\Configurated;
 
