@@ -33,7 +33,7 @@ if (function_exists('validated_config')) {
             );
         }
 
-        $packageServiceProvider = app($packageServiceProviderNamespace);
+        $packageServiceProvider = app()->resolveProvider($packageServiceProviderNamespace);
 
         if (!$packageServiceProvider instanceof Configurated) {
             throw new ConfiguratedValidatedConfigurationException(
