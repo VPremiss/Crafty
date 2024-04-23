@@ -8,7 +8,7 @@ Some essential helpers to rely on during [TALL stack](https://tallstack.dev) dev
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=for-the-badge)](https://packagist.org/packages/vpremiss/crafty)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=for-the-badge&color=forestgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=for-the-badge&color=darkgoldenrod)](https://packagist.org/packages/vpremiss/crafty)
+[![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=for-the-badge&color=b07d00)](https://packagist.org/packages/vpremiss/crafty)
 
 
 ## Description
