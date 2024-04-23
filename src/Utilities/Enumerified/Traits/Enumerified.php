@@ -1,13 +1,15 @@
 <?php
 
-namespace VPremiss\Crafty\Utilities\Enumerifier\Traits;
+declare(strict_types=1);
+
+namespace VPremiss\Crafty\Utilities\Enumerified\Traits;
 
 use Illuminate\Support\Collection;
-use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\DuplicateEnumsException;
-use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\ExcludedAllEnumsException;
-use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\InsufficientAmountException;
-use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\NoEnumCasesFoundException;
-use VPremiss\Crafty\Utilities\Enumerifier\Exceptions\NotAnEnumException;
+use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedDuplicateEnumsException;
+use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedExcludedAllEnumsException;
+use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedInsufficientAmountException;
+use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedNoEnumCasesFoundException;
+use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedNotAnEnumException;
 
 trait Enumerified
 {
@@ -28,7 +30,7 @@ trait Enumerified
     public static function random(int $amount = 1, self|array $exceptFor = [], bool $asArray = false): self|array
     {
         if ($amount < 1) {
-            throw new InsufficientAmountException('The amount should be at least one.');
+            throw new EnumerifiedInsufficientAmountException('The amount should be at least one.');
         }
 
         self::checkForCases();
@@ -95,26 +97,26 @@ trait Enumerified
     private static function checkForCases(): void
     {
         if (empty(self::cases())) {
-            throw new NoEnumCasesFoundException('No enum cases were found!');
+            throw new EnumerifiedNoEnumCasesFoundException('No enum cases were found!');
         }
     }
 
     private static function validatedEnums(array $enums): array
     {
         foreach ($enums as $enum) {
-            if (! $enum instanceof self) {
-                throw new NotAnEnumException('Not an enum instance was detected.');
+            if (!$enum instanceof self) {
+                throw new EnumerifiedNotAnEnumException('Not an enum instance was detected.');
             }
         }
 
         $enumValues = array_map(fn ($enum) => $enum->value, $enums);
         if (count($enumValues) !== count(array_unique($enumValues))) {
-            throw new DuplicateEnumsException('Duplicate enum cases were found.');
+            throw new EnumerifiedDuplicateEnumsException('Duplicate enum cases were found.');
         }
 
         $allCasesValues = array_map(fn ($case) => $case->value, self::cases());
-        if (count($enumValues) === count($allCasesValues) && ! array_diff($allCasesValues, $enumValues)) {
-            throw new ExcludedAllEnumsException('All possible enum cases were excluded!');
+        if (count($enumValues) === count($allCasesValues) && !array_diff($allCasesValues, $enumValues)) {
+            throw new EnumerifiedExcludedAllEnumsException('All possible enum cases were excluded!');
         }
 
         return $enums;

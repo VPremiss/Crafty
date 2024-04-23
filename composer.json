@@ -15,6 +15,11 @@
             "name": "GoodM4ven",
             "email": "GoodM4ven@proton.me",
             "role": "Developer"
+        },
+        {
+            "name": "Haaabeeel",
+            "email": "haabeel@proton.me",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -49,7 +54,8 @@
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage"
+        "test-coverage": "vendor/bin/pest --coverage",
+        "testbench": "vendor/bin/testbench"
     },
     "config": {
         "sort-packages": true,

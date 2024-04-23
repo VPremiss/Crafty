@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -11,7 +13,7 @@ return [
      |
      */
 
-    'databasing_chunks' => 500,
+    'databasing_chunks_count' => 500,
 
     /*
      |--------------------------------------------------------------------------
