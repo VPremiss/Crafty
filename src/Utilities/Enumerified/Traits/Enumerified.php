@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace VPremiss\Crafty\Utilities\Enumerified\Traits;
 
 use Illuminate\Support\Collection;
-use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedDuplicateEnumsException;
-use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedExcludedAllEnumsException;
-use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedInsufficientAmountException;
-use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedNoEnumCasesFoundException;
-use VPremiss\Crafty\Utilities\Enumerified\Exceptions\EnumerifiedNotAnEnumException;
+use VPremiss\Crafty\Utilities\Enumerified\Support\Exceptions\EnumerifiedDuplicateEnumsException;
+use VPremiss\Crafty\Utilities\Enumerified\Support\Exceptions\EnumerifiedExcludedAllEnumsException;
+use VPremiss\Crafty\Utilities\Enumerified\Support\Exceptions\EnumerifiedInsufficientAmountException;
+use VPremiss\Crafty\Utilities\Enumerified\Support\Exceptions\EnumerifiedNoEnumCasesFoundException;
+use VPremiss\Crafty\Utilities\Enumerified\Support\Exceptions\EnumerifiedNotAnEnumException;
 
 trait Enumerified
 {
