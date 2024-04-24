@@ -63,11 +63,18 @@ Below are the tables of all the `Crafty` package helpers:
 
 <br/>
 
+| **CraftyPackage Facade Method**                                                              | Description                                                                                             |
+|---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `validatedConfig(string $configKey, string $packageServiceProviderNamespace)` | Returns the package configuration value gracefully **after validation**. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface methods properly. |                                        |
+| `config(string $configKey, object $packageServiceProvider)` | Returns the package configuration value gracefully. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface methods properly. |                                        |
+
+<br/>
+
 | **Global Function**              | Description                                                                |
 |-----------------------|----------------------------------------------------------------------------|
 | `is_enum(mixed $enum)`| Checks if the provided value is an instance of an enum.                    |
 | `unique_meta_hashing_number(string $string, ?int $digits = null)` | Generates a unique hash number based on the input string and optional digit limit. **Not for security purposes**, merely for general meta information tagging. |
-| `validated_config(string $packageServiceProviderNamespace, string $configKey)` | Return the package configuration value gracefully. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface methods properly. |
+
 
 <br/>
 
