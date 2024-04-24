@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty\Support\Concerns;
 
+use VPremiss\Crafty\Facades\CraftyPackage;
 use VPremiss\Crafty\Utilities\Configurated\Exceptions\ConfiguratedValidatedConfigurationException;
 
 trait HasValidatedConfiguration
 {
     protected function validateDatabasingChunksCountConfig(): void
     {
-        $chunksCount = config(($key = 'crafty.databasing_chunks_count'), $this->configDefault($key));
+        $chunksCount = CraftyPackage::config('crafty.databasing_chunks_count', $this);
 
         if (intval($chunksCount) < 2) {
             throw new ConfiguratedValidatedConfigurationException(
@@ -21,7 +22,7 @@ trait HasValidatedConfiguration
 
     protected function validateInsertionDefaultPropertiesConfig(): void
     {
-        $insertionDefaultProperties = config(($key = 'crafty.insertion_default_properties'), $this->configDefault($key));
+        $insertionDefaultProperties = CraftyPackage::config('crafty.insertion_default_properties', $this);
 
         if (!is_array($insertionDefaultProperties) || !filled($insertionDefaultProperties)) {
             throw new ConfiguratedValidatedConfigurationException(
@@ -32,7 +33,7 @@ trait HasValidatedConfiguration
 
     protected function validateHashDigitsCountConfig(): void
     {
-        $digits = config(($key = 'crafty.hash_digits_count'), $this->configDefault($key));
+        $digits = CraftyPackage::config('crafty.hash_digits_count', $this);
 
         if (intval($digits) < 8) {
             throw new ConfiguratedValidatedConfigurationException(
@@ -43,7 +44,7 @@ trait HasValidatedConfiguration
 
     protected function validateStringHashSeparatorConfig(): void
     {
-        $separator = config(($key = 'crafty.string_hash_separator'), $this->configDefault($key));
+        $separator = CraftyPackage::config('crafty.string_hash_separator', $this);
 
         if (!is_string($separator) || empty($separator)) {
             throw new ConfiguratedValidatedConfigurationException('String-hash separator must be a filled string.');

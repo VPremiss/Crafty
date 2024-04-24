@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VPremiss\Crafty;
 
 use Spatie\LaravelPackageTools\Package;
@@ -23,6 +25,16 @@ class CraftyServiceProvider extends PackageServiceProvider implements Configurat
             ->hasConfigFile();
     }
 
+    public function configValidation(string $configKey): void
+    {
+        match ($configKey) {
+            'crafty.databasing_chunks_count' => $this->validateDatabasingChunksCountConfig(),
+            'crafty.insertion_default_properties' => $this->validateInsertionDefaultPropertiesConfig(),
+            'crafty.hash_digits_count' => $this->validateHashDigitsCountConfig(),
+            'crafty.string_hash_separator' => $this->validateStringHashSeparatorConfig(),
+        };
+    }
+
     public function configDefault(string $configKey): mixed
     {
         return match ($configKey) {
@@ -33,16 +45,6 @@ class CraftyServiceProvider extends PackageServiceProvider implements Configurat
             ],
             'crafty.hash_digits_count' => 8,
             'crafty.string_hash_separator' => ' #',
-        };
-    }
-
-    public function configValidation(string $configKey): void
-    {
-        match ($configKey) {
-            'crafty.databasing_chunks_count' => $this->validateDatabasingChunksCountConfig(),
-            'crafty.insertion_default_properties' => $this->validateInsertionDefaultPropertiesConfig(),
-            'crafty.hash_digits_count' => $this->validateHashDigitsCountConfig(),
-            'crafty.string_hash_separator' => $this->validateStringHashSeparatorConfig(),
         };
     }
 }

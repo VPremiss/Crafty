@@ -55,6 +55,7 @@
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
+        "green": "vendor/bin/phpstan analyse && vendor/bin/pest",
         "testbench": "vendor/bin/testbench"
     },
     "config": {
@@ -70,7 +71,8 @@
                 "VPremiss\\Crafty\\CraftyServiceProvider"
             ],
             "aliases": {
-                "Crafty": "VPremiss\\Crafty\\Facades\\Crafty"
+                "Crafty": "VPremiss\\Crafty\\Facades\\Crafty",
+                "CraftyPackage": "VPremiss\\Crafty\\Facades\\CraftyPackage"
             }
         }
     },

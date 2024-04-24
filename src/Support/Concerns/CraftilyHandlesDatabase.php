@@ -9,14 +9,15 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use VPremiss\Crafty\CraftyServiceProvider;
+use VPremiss\Crafty\Facades\CraftyPackage;
 use VPremiss\Crafty\Support\Exceptions\CraftyChunkedDatabaseInsertCallbackException;
 
 trait CraftilyHandlesDatabase
 {
     public function chunkedDatabaseInsertion(string $tableName, array $dataArrays, Closure $callback): void
     {
-        $chunksCount = validated_config(CraftyServiceProvider::class, 'crafty.databasing_chunks_count');
-        $defaultProperties = validated_config(CraftyServiceProvider::class, 'crafty.insertion_default_properties');
+        $chunksCount = CraftyPackage::validatedConfig('crafty.databasing_chunks_count', CraftyServiceProvider::class);
+        $defaultProperties = CraftyPackage::validatedConfig('crafty.insertion_default_properties', CraftyServiceProvider::class);
         $columnNames = Schema::getColumnListing($tableName);
 
         DB::beginTransaction();
