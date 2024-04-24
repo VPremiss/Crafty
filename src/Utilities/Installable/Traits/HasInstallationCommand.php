@@ -12,44 +12,58 @@ use VPremiss\Crafty\Utilities\Installable\Support\Exceptions\InstallableInterfac
 // ? A package-tools service provider's
 trait HasInstallationCommand
 {
+    public function packageShortName(): string
+    {
+        return $this->package->shortName();
+    }
+
+    public function packagePublishes(array $paths, $tag): void
+    {
+        $this->publishes($paths, $tag);
+    }
+
     // ? Use in the bootingPackage method
     public function installationCommand(): void
     {
         $serviceProvider = $this;
 
-        Artisan::command("{$this->package->shortName()}:install", function () use ($serviceProvider) {
+        if (!$serviceProvider instanceof Installable) {
+            throw new InstallableInterfaceException(
+                'The package service provider must implement Crafty\'s Installable interface.'
+            );
+        }
+
+        Artisan::command("{$serviceProvider->packageShortName()}:install", function () use ($serviceProvider) {
             $this->hidden = true;
 
             $this->comment('Installing the package...');
 
-            if (!$this instanceof Installable) {
-                throw new InstallableInterfaceException(
-                    'The package service provider must implement Crafty\'s Installable interface.'
-                );
-            }
-
             // * =========================
             // * Publishing configuration
             // * =======================
-            
-            $this->call('vendor:publish', ['--tag' => "{$serviceProvider->package->shortName()}-config"]);
+
+            $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-config"]);
+
+            $this->comment('Published the config file.');
 
             // * ======================
             // * Publishing migrations
             // * ====================
-            
-            $this->call('vendor:publish', ['--tag' => "{$serviceProvider->package->shortName()}-migrations"]);
+
+            $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-migrations"]);
+
+            $this->comment('Published migration files.');
 
             // * =========================
             // * Prompt to run migrations
             // * =======================
-            
+
             if ($this->confirm('Shall we proceed to run the migrations?', true)) {
-                $this->info('Running migrations...');
+                $this->comment('Running migrations...');
 
-                $this->call('migrate');
+                $this->callSilently('migrate');
 
-                $this->info('Migrations are done.');
+                $this->comment('Migrated successfully.');
             }
 
             if (!app()->environment('testing')) {
@@ -73,17 +87,19 @@ trait HasInstallationCommand
                 }
 
                 if (!$aSeederWasNotFound) {
-                    $serviceProvider->publishes($seederFilePaths, "{$serviceProvider->package->shortName()}-seeders");
+                    $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");
 
-                    $this->call('vendor:publish', ['--tag' => "{$serviceProvider->package->shortName()}-seeders"]);
+                    $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-seeders"]);
+
+                    $this->comment('Published seeder files.');
                 }
 
                 if (!$aSeederWasNotFound) {
-                    
+
                     // * ======================
                     // * Prompt to run seeders
                     // * ====================
-                    
+
                     if ($this->confirm('Shall we run the seeders too?', true)) {
                         foreach ($seederFilePaths as $_ => $path) {
                             // * Correct the namespace if necessary
@@ -94,36 +110,50 @@ trait HasInstallationCommand
                                 $seederContent
                             );
                             File::put($path, $newSeederContent);
-            
+
                             // * Seed
-                            $this->call('db:seed', [
+                            $this->comment('Running seeders.');
+
+                            $this->callSilently('db:seed', [
                                 '--class' => str($path)->after('seeders/')->before('.php')->value(),
                                 '--force' => true
                             ]);
+
+                            $this->comment('Seeded successfully.');
                         }
                     }
-                    
+
                     // * ===================================
                     // * Add seeders to DatabaseSeeder file
                     // * =================================
-                    
+
                     if (File::exists($databaseSeederPath = database_path("seeders/DatabaseSeeder.php"))) {
                         $fileContents = File::get($databaseSeederPath);
                         $addedClasses = [];
-            
-                        foreach ($seederFilePaths as $_ => $path) {
+
+                        foreach ($seederFilePaths as $path) {
                             $className = str($path)->after('seeders/')->before('.php')->value();
                             $seederClassStatement = "\$this->call({$className}::class);";
-            
+
                             if (!in_array($className, $addedClasses) && strpos($fileContents, $seederClassStatement) === false) {
-                                $searchPattern = '/public function run\(\)(\s*):?\s*void\s*{\s*/';
-                                $replacePattern = "$0\n        $seederClassStatement";
-                                $fileContents = preg_replace($searchPattern, $replacePattern, $fileContents);
-                                $addedClasses[] = $className;
+                                // Use a regular expression to find the exact place to insert the new seeder call
+                                // This pattern accounts for the possible existing empty line
+                                $pattern = '/(public function run\(\): void\s*{\s*\n)(\s*)/';
+                                if (preg_match($pattern, $fileContents, $matches)) {
+                                    // Capture the indentation level to maintain formatting consistency
+                                    $indentation = $matches[2];
+                                    $replacement = $matches[1] . $indentation . $seederClassStatement . "\n" . $indentation;
+
+                                    $fileContents = preg_replace($pattern, $replacement, $fileContents, 1);
+                                    $addedClasses[] = $className;
+                                }
                             }
                         }
-            
+
+                        // Write the file only once after all updates
                         File::put($databaseSeederPath, $fileContents);
+
+                        $this->comment('Added seeder calls in DatabaseSeeder file.');
                     }
                 } else {
                     $this->error('Seeders publishing failed.');
@@ -135,10 +165,10 @@ trait HasInstallationCommand
             // * =========================
             // * Prompt to star on Github
             // * =======================
-            
+
             if ($this->confirm('Would you kindly star our package on GitHub?', true)) {
-                $packageUrl = "https://github.com/vpremiss/{$serviceProvider->package->shortName()}";
-    
+                $packageUrl = "https://github.com/vpremiss/{$serviceProvider->packageShortName()}";
+
                 if (PHP_OS_FAMILY == 'Darwin') {
                     exec("open {$packageUrl}");
                 }
@@ -149,6 +179,8 @@ trait HasInstallationCommand
                     exec("xdg-open {$packageUrl}");
                 }
             }
+
+            $this->comment('Arabicable installation complete.');
         });
     }
 }
