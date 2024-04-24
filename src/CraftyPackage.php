@@ -10,7 +10,7 @@ use VPremiss\Crafty\Utilities\Configurated\Interfaces\Configurated;
 
 class CraftyPackage
 {
-    public function validatedConfig(string $packageServiceProviderNamespace, string $configKey): mixed
+    public function validatedConfig(string $configKey, string $packageServiceProviderNamespace): mixed
     {
         if (!filled($packageServiceProviderNamespace) && !class_exists($packageServiceProviderNamespace)) {
             throw new ConfiguratedValidatedConfigurationException(
@@ -54,7 +54,7 @@ class CraftyPackage
         return config($configKey, $default);
     }
 
-    public function config(object $packageServiceProvider, string $configKey): mixed
+    public function config(string $configKey, object $packageServiceProvider): mixed
     {
         return config($configKey, $packageServiceProvider->configDefault($configKey));
     }
