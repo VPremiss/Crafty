@@ -8,5 +8,4 @@ use Exception;
 
 class CraftyChunkedDatabaseInsertCallbackException extends Exception
 {
-    //
 }

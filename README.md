@@ -31,7 +31,20 @@ Contains a helper main service class (that you can use as a [Laravel facade](htt
   ```
 
 
-## API
+## Usage
+
+- **Configurated**
+  - Ensures, as a package service provider's interface, that package configuration are validated and handled gracefully.
+  - It's used along CraftyPackage's `config()` and `validatedConfig()` methods.
+
+- **Enumerified**
+  - Can be applied to enums to extend their TALL abilities.
+
+- **Installable**
+  - Used along `HasInstallationCommand` trait on the package service provider, in order to implement an installation command.
+  - Needs the `installationCommand()` method applied within the [laravel-package-tools](https://github.com/spatie/laravel-package-tools) service provider's `bootingPackage()` method.
+
+### API
 
 Below are the tables of all the `Crafty` package helpers:
 
@@ -40,12 +53,14 @@ Below are the tables of all the `Crafty` package helpers:
 | **Interface**          | Description                                                                               |
 |----------------|-------------------------------------------------------------------------------------------|
 | `Configurated`  | Ensures that the package service provider is dealing with configuration [internally](src/CraftyServiceProvider.php#26). -Making it compatible to be used in other packages and tests!    |
+| `Installable`  | Ensures that the package service provider has seeder-file-paths array for its installation command.    |
 
 <br/>
 
 | **Trait**          | Description                                                                               |
 |----------------|-------------------------------------------------------------------------------------------|
 | `Enumerified`  | Extends enum functionality to retrieve counts, random instances, and enum collections.    |
+| `HasInstallationCommand`  | Makes `installationCommand()` method available to be used in `bootingPackage()` method in order to set up an installation command.    |
 
 <br/>
 

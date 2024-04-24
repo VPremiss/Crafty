@@ -8,5 +8,4 @@ use Exception;
 
 class ConfiguratedValidatedConfigurationException extends Exception
 {
-    //
 }
