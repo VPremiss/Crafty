@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty;
 
-use UnhandledMatchError;
 use VPremiss\Crafty\Utilities\Configurated\Exceptions\ConfiguratedValidatedConfigurationException;
 use VPremiss\Crafty\Utilities\Configurated\Interfaces\Configurated;
 
@@ -32,38 +31,36 @@ class CraftyPackage
             );
         }
 
-        try {
-            $packageName = str($configKey)->before('.')->value();
-            $mainKey = str($configKey)->after('.')->before('.')->value();
-
-            $packageServiceProvider->configValidation("$packageName.$mainKey");
-        } catch (UnhandledMatchError) {
-            if (!app()->environment('testing')) { // ? Working around the tests dealing only with the latest `main` branch version
-                throw new ConfiguratedValidatedConfigurationException(
-                    'The config key is not handled among configValidation() match cases.'
-                );
-            }
+        if (is_null($validation = $this->getConfigValidation($configKey)) || !is_callable($validation)) {
+            throw new ConfiguratedValidatedConfigurationException(
+                'No closure was found to handle this config key among configValidations array values.'
+            );
         }
 
-        try {
-            $default = $packageServiceProvider->configDefault($configKey);
-        } catch (UnhandledMatchError) {
-            if (!app()->environment('testing')) { // ? Working around the tests dealing only with the latest `main` branch version
-                throw new ConfiguratedValidatedConfigurationException(
-                    'The config key is not handled among configDefault() match cases.'
-                );
-            }
-        }
+        call_user_func($validation);
 
-        if (app()->environment('testing')) { // ? Working around the tests dealing only with the latest `main` branch version
-            return config($configKey);
-        }
-
-        return config($configKey, $default); /** @phpstan-ignore-line */
+        return config($configKey);
     }
 
-    public function config(string $configKey, object $packageServiceProvider): mixed
+    protected function getConfigValidation(string $configKey): ?callable
     {
-        return config($configKey, $packageServiceProvider->configDefault($configKey));
+        /** @var CraftyServiceProvider $crafty */
+        $crafty = app()->resolveProvider(CraftyServiceProvider::class);
+
+        $basePackageName = str($configKey)->before('.')->value() . '.';
+
+        while ($configKey != $basePackageName) {
+            if (isset($crafty->allConfigValidations[$configKey])) {
+                return $crafty->allConfigValidations[$configKey];
+            }
+
+            $configKey = str($configKey)->beforeLast('.')->value();
+
+            if (!str($configKey)->contains('.')) {
+                $configKey = $basePackageName;
+            }
+        }
+
+        return null;
     }
 }

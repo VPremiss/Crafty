@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty;
 
+use Illuminate\Support\Facades\Event;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VPremiss\Crafty\Support\Concerns\HasValidatedConfiguration;
+use VPremiss\Crafty\Support\Concerns\HasValidatedConfigurations;
 use VPremiss\Crafty\Utilities\Configurated\Interfaces\Configurated;
+use VPremiss\Crafty\Utilities\Configurated\Support\Events\ConfigurationBroadcastedEvent;
 
 class CraftyServiceProvider extends PackageServiceProvider implements Configurated
 {
-    use HasValidatedConfiguration;
+    use HasValidatedConfigurations;
+
+    public $allConfigValidations = [];
 
     public function configurePackage(Package $package): void
     {
@@ -25,26 +29,26 @@ class CraftyServiceProvider extends PackageServiceProvider implements Configurat
             ->hasConfigFile();
     }
 
-    public function configValidation(string $configKey): void
+    public function bootingPackage()
     {
-        match ($configKey) {
-            'crafty.databasing_chunks_count' => $this->validateDatabasingChunksCountConfig(),
-            'crafty.insertion_default_properties' => $this->validateInsertionDefaultPropertiesConfig(),
-            'crafty.hash_digits_count' => $this->validateHashDigitsCountConfig(),
-            'crafty.string_hash_separator' => $this->validateStringHashSeparatorConfig(),
-        };
+        $this->allConfigValidations += $this->configValidations();
+
+        Event::listen(function (ConfigurationBroadcastedEvent $event) {
+            foreach ($event->configurations as $name => $path) {
+                $this->mergeConfigFrom($path, $name);
+            }
+
+            $this->allConfigValidations += $event->configurationValidations;
+        });
     }
 
-    public function configDefault(string $configKey): mixed
+    public function configValidations(): array
     {
-        return match ($configKey) {
-            'crafty.databasing_chunks_count' => 500,
-            'crafty.insertion_default_properties' => [
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            'crafty.hash_digits_count' => 8,
-            'crafty.string_hash_separator' => ' #',
-        };
+        return [
+            'crafty.databasing_chunks_count' => fn () => $this->validateDatabasingChunksCountConfig(),
+            'crafty.insertion_default_properties' => fn () => $this->validateInsertionDefaultPropertiesConfig(),
+            'crafty.hash_digits_count' => fn () => $this->validateHashDigitsCountConfig(),
+            'crafty.string_hash_separator' => fn () => $this->validateStringHashSeparatorConfig(),
+        ];
     }
 }

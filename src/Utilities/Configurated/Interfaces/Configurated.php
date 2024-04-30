@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty\Utilities\Configurated\Interfaces;
 
+use Closure;
+
 interface Configurated
 {
-    public function configDefault(string $configKey): mixed;
-
-    public function configValidation(string $configKey): void;
+    /**
+     * It's must return an array of configuration keys pointing towards their
+     * validation methods.
+     *
+     * @return array<string, Closure>
+     */
+    public function configValidations(): array;
 }

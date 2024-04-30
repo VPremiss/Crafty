@@ -8,6 +8,7 @@ Some essential helpers to rely on during [TALL stack](https://tallstack.dev) dev
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=for-the-badge)](https://packagist.org/packages/vpremiss/crafty)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=for-the-badge&color=forestgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
+![Codecov](https://img.shields.io/codecov/c/github/VPremiss/Crafty?style=for-the-badge&color=forestgreen)
 [![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=for-the-badge&color=b07d00)](https://packagist.org/packages/vpremiss/crafty)
 
 
@@ -30,12 +31,18 @@ Contains a helper main service class (that you can use as a [Laravel facade](htt
   php artisan vendor:publish --tag="crafty-config"
   ```
 
+### Upgrading
+
+1. Backup your current [config](config/crafty.php).
+
+2. Ensure that those are re-published using this Artisan command:
+
+  ```bash
+  php artisan vendor:publish --tag="crafty-config" --force
+  ```
+
 
 ## Usage
-
-- **Configurated**
-  - Ensures, as a package service provider's interface, that package configuration are validated and handled gracefully.
-  - It's used along CraftyPackage's `config()` and `validatedConfig()` methods.
 
 - **Enumerified**
   - Can be applied to enums to extend their TALL abilities.
@@ -43,6 +50,12 @@ Contains a helper main service class (that you can use as a [Laravel facade](htt
 - **Installable**
   - Used along `HasInstallationCommand` trait on the package service provider, in order to implement an installation command.
   - Needs the `installationCommand()` method applied within the [laravel-package-tools](https://github.com/spatie/laravel-package-tools) service provider's `bootingPackage()` method.
+
+- **Configurated**
+  - Ensures, as a package service provider's interface, that package configurations are validated and handled gracefully.
+  - During `bootingPackage()`, you also have to call `broadcastConfiguration()` method that's available in `HasDispatchedConfigurations` trait.
+  - It's used along `CraftyPackage::validatedConfig()` method.
+
 
 ### API
 
@@ -61,6 +74,7 @@ Below are the tables of all the `Crafty` package helpers:
 |----------------|-------------------------------------------------------------------------------------------|
 | `Enumerified`  | Extends enum functionality to retrieve counts, random instances, and enum collections.    |
 | `HasInstallationCommand`  | Makes `installationCommand()` method available to be used in `bootingPackage()` method in order to set up an installation command.    |
+| `HasDispatchedConfigurations`  | Sends configuration validations to Crafty for handling when needed.    |
 
 <br/>
 
@@ -81,7 +95,6 @@ Below are the tables of all the `Crafty` package helpers:
 | **CraftyPackage Facade Method**                                                              | Description                                                                                             |
 |---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `validatedConfig(string $configKey, string $packageServiceProviderNamespace)` | Returns the package configuration value gracefully **after validation**. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface methods properly. |                                        |
-| `config(string $configKey, object $packageServiceProvider)` | Returns the package configuration value gracefully. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface methods properly. |                                        |
 
 <br/>
 
@@ -117,6 +130,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE.m
 
 - [ChatGPT](https://chat.openai.com)
 - [Laravel](https://github.com/Laravel)
+- [Orchestra](https://github.com/orchestral)
 - [Spatie](https://github.com/spatie)
 - [Graphite](https://graphite.dev)
 - [WTD](https://whatthediff.ai)

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty\Tests;
 
+use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 use VPremiss\Crafty\CraftyServiceProvider;
 
 class TestCase extends Orchestra
 {
+    use WithWorkbench;
+
     protected function setUp(): void
     {
         parent::setUp();
