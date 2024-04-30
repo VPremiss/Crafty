@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static mixed validatedConfig(string $configKey, string $packageServiceProviderNamespace)
- * @method static mixed config(string $configKey, object $packageServiceProvider)
  *
  * @see \VPremiss\Crafty\CraftyPackage
  */

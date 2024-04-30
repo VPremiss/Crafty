@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty\Support\Concerns;
 
-use VPremiss\Crafty\Facades\CraftyPackage;
 use VPremiss\Crafty\Utilities\Configurated\Exceptions\ConfiguratedValidatedConfigurationException;
 
-trait HasValidatedConfiguration
+trait HasValidatedConfigurations
 {
     protected function validateDatabasingChunksCountConfig(): void
     {
-        $chunksCount = CraftyPackage::config('crafty.databasing_chunks_count', $this);
-
-        if (intval($chunksCount) < 2) {
+        if (intval(config('crafty.databasing_chunks_count')) < 2) {
             throw new ConfiguratedValidatedConfigurationException(
                 "Database chunking count should be more than one. What's the point otherwise?!"
             );
@@ -22,7 +19,7 @@ trait HasValidatedConfiguration
 
     protected function validateInsertionDefaultPropertiesConfig(): void
     {
-        $insertionDefaultProperties = CraftyPackage::config('crafty.insertion_default_properties', $this);
+        $insertionDefaultProperties = config('crafty.insertion_default_properties');
 
         if (!is_array($insertionDefaultProperties) || !filled($insertionDefaultProperties)) {
             throw new ConfiguratedValidatedConfigurationException(
@@ -33,9 +30,7 @@ trait HasValidatedConfiguration
 
     protected function validateHashDigitsCountConfig(): void
     {
-        $digits = CraftyPackage::config('crafty.hash_digits_count', $this);
-
-        if (intval($digits) < 8) {
+        if (intval($digits = $digits = config('crafty.hash_digits_count')) < 8) {
             throw new ConfiguratedValidatedConfigurationException(
                 "Requested $digits digits for general meta hashing generation, which is too low to maintain uniqueness in identifiers. Please use at least 8 digits."
             );
@@ -44,9 +39,7 @@ trait HasValidatedConfiguration
 
     protected function validateStringHashSeparatorConfig(): void
     {
-        $separator = CraftyPackage::config('crafty.string_hash_separator', $this);
-
-        if (!is_string($separator) || empty($separator)) {
+        if (!is_string($separator = config('crafty.string_hash_separator')) || empty($separator)) {
             throw new ConfiguratedValidatedConfigurationException('String-hash separator must be a filled string.');
         }
     }
