@@ -9,7 +9,7 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use VPremiss\Crafty\Support\Concerns\HasValidatedConfigurations;
 use VPremiss\Crafty\Utilities\Configurated\Interfaces\Configurated;
-use VPremiss\Crafty\Utilities\Configurated\Support\Events\ConfigurationBroadcastedEvent;
+use VPremiss\Crafty\Utilities\Configurated\Support\Events\ConfigurationDispatchedEvent;
 
 class CraftyServiceProvider extends PackageServiceProvider implements Configurated
 {
@@ -33,7 +33,7 @@ class CraftyServiceProvider extends PackageServiceProvider implements Configurat
     {
         $this->allConfigValidations += $this->configValidations();
 
-        Event::listen(function (ConfigurationBroadcastedEvent $event) {
+        Event::listen(function (ConfigurationDispatchedEvent $event) {
             foreach ($event->configurations as $name => $path) {
                 $this->mergeConfigFrom($path, $name);
             }

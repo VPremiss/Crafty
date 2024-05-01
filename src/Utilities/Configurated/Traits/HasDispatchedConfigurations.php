@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VPremiss\Crafty\Utilities\Configurated\Traits;
 
-use VPremiss\Crafty\Utilities\Configurated\Support\Events\ConfigurationBroadcastedEvent;
+use VPremiss\Crafty\Utilities\Configurated\Support\Events\ConfigurationDispatchedEvent;
 
 trait HasDispatchedConfigurations
 {
@@ -19,9 +19,9 @@ trait HasDispatchedConfigurations
         return $configurations;
     }
 
-    protected function broadcastConfiguration()
+    protected function dispatchConfiguration()
     {
-        ConfigurationBroadcastedEvent::dispatch(
+        ConfigurationDispatchedEvent::dispatch(
             $this->packageConfigurations(),
             $this->configValidations(),
         );
