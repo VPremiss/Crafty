@@ -8,7 +8,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ConfigurationBroadcastedEvent
+class ConfigurationDispatchedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

@@ -53,7 +53,7 @@ Contains a helper main service class (that you can use as a [Laravel facade](htt
 
 - **Configurated**
   - Ensures, as a package service provider's interface, that package configurations are validated and handled gracefully.
-  - During `bootingPackage()`, you also have to call `broadcastConfiguration()` method that's available in `HasDispatchedConfigurations` trait.
+  - During `bootingPackage()`, you also have to call `dispatchConfiguration()` method that's available in `HasDispatchedConfigurations` trait.
   - It's used along `CraftyPackage::validatedConfig()` method.
 
 
@@ -129,11 +129,10 @@ This package is open-sourced software licensed under the [MIT license](LICENSE.m
 ### Credits
 
 - [ChatGPT](https://chat.openai.com)
-- [Laravel](https://github.com/Laravel)
-- [Orchestra](https://github.com/orchestral)
-- [Spatie](https://github.com/spatie)
 - [Graphite](https://graphite.dev)
-- [WTD](https://whatthediff.ai)
+- [Laravel](https://github.com/Laravel)
+- [Spatie](https://github.com/spatie)
+- [BeyondCode](https://beyondco.de)
 - [All Contributors](../../contributors)
 - And the generous individuals that we've learned from and been supported by throughout our journey...
 
