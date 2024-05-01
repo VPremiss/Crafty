@@ -51,6 +51,7 @@
     },
     "scripts": {
         "post-autoload-dump": [
+            "@clear",
             "@prepare"
         ],
         "analyse": "vendor/bin/phpstan analyse",
@@ -62,11 +63,12 @@
         ],
         "bench": "vendor/bin/testbench",
         "bench:install": "@bench workbench:install",
-        "bench:uninstall": "@bench package:purge-skeleton --ansi",
+        "clear": "@bench package:purge-skeleton --ansi",
         "prepare": "@bench package:discover --ansi",
         "build": "@bench workbench:build --ansi",
         "serve": [
             "Composer\\Config::disableProcessTimeout",
+            "@clear",
             "@prepare",
             "@build",
             "@bench serve"
