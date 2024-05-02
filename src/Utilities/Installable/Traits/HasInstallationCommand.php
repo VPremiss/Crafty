@@ -22,7 +22,7 @@ trait HasInstallationCommand
         $this->publishes($paths, $tag);
     }
 
-    // ? Use in the bootingPackage method
+    // ? Apply in the bootingPackage method
     public function installationCommand(): void
     {
         $serviceProvider = $this;
