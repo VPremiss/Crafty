@@ -12,6 +12,16 @@ it('can store configuration values through keys and suppots key-dotting', functi
     CraftyPackage::setConfiguration($key, $value);
 
     expect(CraftyPackage::getConfiguration($key))->toBe($value);
+
+    expect(CraftyPackage::getConfiguration('some-package.some-array'))->toBe([
+        'some-inner-value' => [
+            'anything',
+            'really',
+        ],
+    ]);
+
+    expect(CraftyPackage::getConfiguration('some-package.abc'))->toBeNull();
+    expect(CraftyPackage::getConfiguration('some-package.some-array.xyz'))->toBeNull();
 });
 
 it('can also validate configuration values through keys and suppots key-dotting too', function () {
