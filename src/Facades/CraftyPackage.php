@@ -7,8 +7,9 @@ namespace VPremiss\Crafty\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static mixed validatedConfig(string $configKey, string $packageServiceProviderNamespace)
- * @method static mixed config(string $configKey, object $packageServiceProvider)
+ * @method static mixed getConfiguration(string $key, $default = null)
+ * @method static void setConfiguration(string $key, mixed $value)
+ * @method static void setConfigurationValidation(string $key, callable $closure)
  *
  * @see \VPremiss\Crafty\CraftyPackage
  */

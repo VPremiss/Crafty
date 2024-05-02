@@ -16,7 +16,7 @@
     backupStaticProperties="false"
 >
     <testsuites>
-        <testsuite name="VPremiss Test Suite">
+        <testsuite name="Crafty Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

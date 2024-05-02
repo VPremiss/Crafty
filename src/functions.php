@@ -1,6 +1,5 @@
 <?php
 
-use VPremiss\Crafty\CraftyServiceProvider;
 use VPremiss\Crafty\Facades\CraftyPackage;
 use VPremiss\Crafty\Support\Exceptions\CraftyFunctionDoesNotExistException;
 
@@ -38,7 +37,7 @@ if (function_exists('unique_meta_hashing_number')) {
 } else {
     function unique_meta_hashing_number(string $string, ?int $digits = null): string
     {
-        $digits ??= CraftyPackage::validatedConfig('crafty.hash_digits_count', CraftyServiceProvider::class);
+        $digits ??= CraftyPackage::getConfiguration('crafty.hash_digits_count');
 
         $uniqueString = $string . uniqid() . rand(100, 999);
         $hash = md5($uniqueString);
