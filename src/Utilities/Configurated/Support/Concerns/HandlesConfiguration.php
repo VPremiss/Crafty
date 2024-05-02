@@ -15,8 +15,8 @@ trait HandlesConfiguration
     {
         $value = Arr::get($this->configurations, $key, $default);
 
-        if (isset($this->configurationValidations[$key])) {
-            $this->configurationValidations[$key]($value);
+        if ($closure = Arr::get($this->configurationValidations, $key)) {
+            $closure($value);
         }
 
         return $value;
@@ -33,6 +33,6 @@ trait HandlesConfiguration
 
     public function setConfigurationValidation(string $key, callable $closure): void
     {
-        $this->configurationValidations[$key] = $closure;
+        Arr::set($this->configurationValidations, $key, $closure);
     }
 }
