@@ -11,5 +11,4 @@ class Crafty
     use Concerns\CraftilyHandlesDatabase;
     use Concerns\CraftilyHandlesGeneration;
     use Concerns\CraftilyHandlesManipulation;
-    use Concerns\CraftilyHandlesSearching;
 }
