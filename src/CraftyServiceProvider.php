@@ -35,10 +35,12 @@ class CraftyServiceProvider extends PackageServiceProvider implements Configurat
     public function configurationValidations(): array
     {
         return [
-            'crafty.databasing_chunks_count' => fn ($value) => $this->validateDatabasingChunksCountConfig($value),
-            'crafty.insertion_default_properties' => fn ($value) => $this->validateInsertionDefaultPropertiesConfig($value),
-            'crafty.hash_digits_count' => fn ($value) => $this->validateHashDigitsCountConfig($value),
-            'crafty.string_hash_separator' => fn ($value) => $this->validateStringHashSeparatorConfig($value),
+            'crafty' => [
+                'databasing_chunks_count' => fn ($value) => $this->validateDatabasingChunksCountConfig($value),
+                'insertion_default_properties' => fn ($value) => $this->validateInsertionDefaultPropertiesConfig($value),
+                'hash_digits_count' => fn ($value) => $this->validateHashDigitsCountConfig($value),
+                'string_hash_separator' => fn ($value) => $this->validateStringHashSeparatorConfig($value),
+            ],
         ];
     }
 }
