@@ -30,7 +30,7 @@ trait ManagesConfigurations
         }
 
         // ? Saves their validations
-        foreach ($this->configurationValidations() as $key => $closure) {
+        foreach (Arr::dot($this->configurationValidations()) as $key => $closure) {
             app(CraftyPackage::class)->setConfigurationValidation($key, $closure);
         }
     }

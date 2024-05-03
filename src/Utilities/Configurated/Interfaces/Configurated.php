@@ -10,7 +10,7 @@ interface Configurated
      * It's must return an array of configuration keys pointing towards their
      * validation method closures with expected values.
      *
-     * @return array<string, callable>
+     * @return array
      */
     public function configurationValidations(): array;
 }
