@@ -66,7 +66,7 @@ trait HasInstallationCommand
                 $this->comment('Migrated successfully.');
             }
 
-            if (!app()->environment('testing')) {
+            if (!app()->environment('testing') || env('IN_CI', false)) {
 
                 // * ===================
                 // * Publishing seeders
