@@ -102,15 +102,6 @@ trait HasInstallationCommand
 
                     if ($this->confirm('Shall we run the seeders too?', true)) {
                         foreach ($seederFilePaths as $_ => $path) {
-                            // * Correct the namespace if necessary
-                            $seederContent = File::get($path);
-                            $newSeederContent = preg_replace(
-                                '/namespace\s+\w+\\\(\w+)\\\Database\\\Seeders;/', // ? getting rid of Vendor/PackageName
-                                'namespace Database\Seeders;',
-                                $seederContent
-                            );
-                            File::put($path, $newSeederContent);
-
                             // * Seed
                             $this->comment('Running seeders.');
 
