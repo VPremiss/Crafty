@@ -107,6 +107,32 @@ Below are the tables of all the `Crafty` package helpers:
 
 <br/>
 
+### Package Development
+
+To integrate this package into the development of another package, ensure you load it first within your [TestCase](./tests/TestCase.php) file:
+
+```php
+class TestCase extends Orchestra
+{
+    // ...
+    public function ignorePackageDiscoveriesFrom()
+    {
+        return [
+            'vpremiss/arabicable', // the other package
+            'vpremiss/crafty',
+        ];
+    }
+    
+    protected function getPackageProviders($_)
+    {
+        return [
+            \VPremiss\Crafty\CraftyServiceProvider::class,
+            \VPremiss\Arabicable\ArabicableServiceProvider::class, // the other package
+        ];
+    }
+    // ...
+}
+```
 
 ### Changelogs
 
