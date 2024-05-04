@@ -22,7 +22,9 @@ trait ManagesConfigurations
             );
         }
 
-        $this->app->singleton(CraftyPackage::class, fn ($_) => new CraftyPackage());
+        if (!$this->app->bound(CraftyPackage::class)) {
+            $this->app->singleton(CraftyPackage::class, fn ($app) => new CraftyPackage());
+        }
 
         // ? Saves configurations
         foreach ($this->getPackageConfigurationFiles() as $name => $path) {
