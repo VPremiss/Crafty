@@ -7,7 +7,7 @@
 Some essential helpers to rely on during [TALL stack](https://tallstack.dev) development.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vpremiss/crafty.svg?style=for-the-badge&color=gray)](https://packagist.org/packages/vpremiss/crafty)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/run-tests.yml?branch=main&label=tests&style=for-the-badge&color=forestgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/vpremiss/crafty/pestphp-testing.yml?branch=main&label=tests&style=for-the-badge&color=forestgreen)](https://github.com/vpremiss/crafty/actions?query=workflow%3Arun-tests+branch%3Amain)
 ![Codecov](https://img.shields.io/codecov/c/github/VPremiss/Crafty?style=for-the-badge&color=purple)
 [![Total Downloads](https://img.shields.io/packagist/dt/vpremiss/crafty.svg?style=for-the-badge&color=blue)](https://packagist.org/packages/vpremiss/crafty)
 
@@ -107,6 +107,32 @@ Below are the tables of all the `Crafty` package helpers:
 
 <br/>
 
+### Package Development
+
+To integrate this package into the development of another package, ensure you load it first within your [TestCase](./tests/TestCase.php) file:
+
+```php
+class TestCase extends Orchestra
+{
+    // ...
+    public function ignorePackageDiscoveriesFrom()
+    {
+        return [
+            'vpremiss/arabicable', // the other package
+            'vpremiss/crafty',
+        ];
+    }
+    
+    protected function getPackageProviders($_)
+    {
+        return [
+            \VPremiss\Crafty\CraftyServiceProvider::class,
+            \VPremiss\Arabicable\ArabicableServiceProvider::class, // the other package
+        ];
+    }
+    // ...
+}
+```
 
 ### Changelogs
 
@@ -135,7 +161,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE.m
 - [Spatie](https://github.com/spatie)
 - [BeyondCode](https://beyondco.de)
 - [The Contributors](../../contributors)
-- All the [backend packages](/composer.json#20) and services this package relies on...
+- All the [backend packages](./composer.json#20) and services this package relies on...
 - And the generous individuals that we've learned from and been supported by throughout our journey...
 
 
