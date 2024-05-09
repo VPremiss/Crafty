@@ -104,6 +104,15 @@ trait HasInstallationCommand
                         }
                     }
 
+                    $result = Process::path(base_path())->run(
+                        'composer config --no-plugins allow-plugins.pestphp/pest-plugin true'
+                    );
+
+                    if (env('IN_CI', false)) {
+                        $this->comment($result->output());
+                        $this->comment($result->errorOutput());
+                    }
+                    
                     $result = Process::path(base_path())->run('composer dump-autoload');
 
                     if (env('IN_CI', false)) {
