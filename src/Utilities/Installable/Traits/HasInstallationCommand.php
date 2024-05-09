@@ -124,9 +124,9 @@ trait HasInstallationCommand
                                 require_once $path;
 
                                 $namespace = $serviceProvider->getPackageNamespace();
-                                $escapedNamespace = str_replace('\\', '\\\\', $namespace);
                                 $className = str($path)->after('seeders/')->before('.php')->value();
-                                $className = "{$escapedNamespace}\\Database\\Seeders\\$className";
+                                $className = "{$namespace}\\Database\\Seeders\\$className";
+
                                 $seeder = new $className;
                                 $seeder->run();
                             } else {
