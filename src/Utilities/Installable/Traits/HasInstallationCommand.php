@@ -6,6 +6,7 @@ namespace VPremiss\Crafty\Utilities\Installable\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Process;
 use VPremiss\Crafty\Utilities\Installable\Interfaces\Installable;
 use VPremiss\Crafty\Utilities\Installable\Support\Exceptions\InstallableInterfaceException;
 
@@ -102,6 +103,8 @@ trait HasInstallationCommand
                             File::put($path, preg_replace($namespacePattern, $correctNamespace, $fileContents));
                         }
                     }
+
+                    Process::run('composer dump-autoload');
 
                     $this->comment('Published seeder files.');
                 }
