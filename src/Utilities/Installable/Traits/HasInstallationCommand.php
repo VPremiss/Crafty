@@ -104,7 +104,12 @@ trait HasInstallationCommand
                         }
                     }
 
-                    Process::run('composer dump-autoload');
+                    $result = Process::path(base_path())->run('composer dump-autoload');
+
+                    if (env('IN_CI', false)) {
+                        $this->comment($result->output());
+                        $this->comment($result->errorOutput());
+                    }
 
                     $this->comment('Published seeder files.');
                 }
