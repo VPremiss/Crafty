@@ -89,7 +89,19 @@ trait HasInstallationCommand
                 if (!$aSeederWasNotFound) {
                     $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");
 
+                    // ? Publishing now
                     $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-seeders"]);
+
+                    // ? Update the seeders' namespaces afterwards
+                    foreach ($seederFilePaths as $path) {
+                        $fileContents = File::get($path);
+                        $correctNamespace = "namespace Database\Seeders;";
+                        $namespacePattern = '/^namespace\s+([a-zA-Z0-9\\\]+);/m';
+
+                        if (preg_match($namespacePattern, $fileContents, $matches)) {
+                            File::put($path, preg_replace($namespacePattern, $correctNamespace, $fileContents));
+                        }
+                    }
 
                     $this->comment('Published seeder files.');
                 }
@@ -101,7 +113,7 @@ trait HasInstallationCommand
                     // * ====================
 
                     if ($this->confirm('Shall we run the seeders too?', true)) {
-                        foreach ($seederFilePaths as $_ => $path) {
+                        foreach ($seederFilePaths as $path) {
                             // * Seed
                             $this->comment('Running seeders.');
 
@@ -126,12 +138,13 @@ trait HasInstallationCommand
                             $className = str($path)->after('seeders/')->before('.php')->value();
                             $seederClassStatement = "\$this->call({$className}::class);";
 
+                            // ? Use a regular expression to find the exact place to insert the new seeder call
                             if (!in_array($className, $addedClasses) && strpos($fileContents, $seederClassStatement) === false) {
-                                // Use a regular expression to find the exact place to insert the new seeder call
-                                // This pattern accounts for the possible existing empty line
+                                // ? This pattern accounts for the possible existing empty line
                                 $pattern = '/(public function run\(\): void\s*{\s*\n)(\s*)/';
+
                                 if (preg_match($pattern, $fileContents, $matches)) {
-                                    // Capture the indentation level to maintain formatting consistency
+                                    // ? Capture the indentation level to maintain formatting consistency
                                     $indentation = $matches[2];
                                     $replacement = $matches[1] . $indentation . $seederClassStatement . "\n" . $indentation;
 
@@ -141,7 +154,7 @@ trait HasInstallationCommand
                             }
                         }
 
-                        // Write the file only once after all updates
+                        // ? Write all the seeders at once
                         File::put($databaseSeederPath, $fileContents);
 
                         $this->comment('Added seeder calls in DatabaseSeeder file.');
