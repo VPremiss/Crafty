@@ -6,7 +6,7 @@ namespace VPremiss\Crafty\Utilities\Installable\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Process;
+use ReflectionClass;
 use VPremiss\Crafty\Utilities\Installable\Interfaces\Installable;
 use VPremiss\Crafty\Utilities\Installable\Support\Exceptions\InstallableInterfaceException;
 
@@ -21,6 +21,11 @@ trait HasInstallationCommand
     public function packagePublishes(array $paths, $tag): void
     {
         $this->publishes($paths, $tag);
+    }
+
+    public function getPackageNamespace(): string
+    {
+        return (new ReflectionClass($this))->getNamespaceName();
     }
 
     // ? Apply in the bootingPackage method
@@ -104,26 +109,7 @@ trait HasInstallationCommand
                         }
                     }
 
-                    if (env('IN_CI', false)) {
-                        Process::path(base_path())->run(
-                            'composer config --no-plugins allow-plugins.pestphp/pest-plugin true'
-                        );
-                        Process::path(base_path())->run(
-                            'composer config --no-plugins allow-plugins.phpstan/extension-installer true'
-                        );
-                    }
-
-                    $result = Process::path(base_path())->run('composer dump-autoload');
-
-                    if (env('IN_CI', false)) {
-                        $this->comment($result->output());
-                        $this->comment($result->errorOutput());
-                    }
-
                     $this->comment('Published seeder files.');
-                }
-
-                if (!$aSeederWasNotFound) {
 
                     // * ======================
                     // * Prompt to run seeders
@@ -134,10 +120,21 @@ trait HasInstallationCommand
                             // * Seed
                             $this->comment('Running seeders.');
 
-                            $this->callSilently('db:seed', [
-                                '--class' => str($path)->after('seeders/')->before('.php')->value(),
-                                '--force' => true
-                            ]);
+                            if (env('IN_CI', false)) {
+                                require_once $path;
+
+                                $namespace = $serviceProvider->getPackageNamespace();
+                                $escapedNamespace = str_replace('\\', '\\\\', $namespace);
+                                $className = str($path)->after('seeders/')->before('.php')->value();
+                                $className = "{$escapedNamespace}\\Database\\Seeders\\$className";
+                                $seeder = new $className;
+                                $seeder->run();
+                            } else {
+                                $this->callSilently('db:seed', [
+                                    '--class' => str($path)->after('seeders/')->before('.php')->value(),
+                                    '--force' => true
+                                ]);
+                            }
 
                             $this->comment('Seeded successfully.');
                         }
