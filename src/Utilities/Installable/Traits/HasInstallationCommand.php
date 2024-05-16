@@ -120,18 +120,18 @@ trait HasInstallationCommand
                             // * Seed
                             $this->comment('Running seeders.');
 
+                            $namespace = $serviceProvider->getPackageNamespace();
+                            $className = str($path)->after('seeders/')->before('.php')->value();
+                            $className = "{$namespace}\\Database\\Seeders\\$className";
+
                             if (env('IN_CI', false)) {
                                 require_once $path;
-
-                                $namespace = $serviceProvider->getPackageNamespace();
-                                $className = str($path)->after('seeders/')->before('.php')->value();
-                                $className = "{$namespace}\\Database\\Seeders\\$className";
 
                                 $seeder = new $className;
                                 $seeder->run();
                             } else {
                                 $this->callSilently('db:seed', [
-                                    '--class' => str($path)->after('seeders/')->before('.php')->value(),
+                                    '--class' => $className,
                                     '--force' => true
                                 ]);
                             }

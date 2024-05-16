@@ -8,7 +8,8 @@ on:
       - 'phpunit.xml.dist'
       - 'composer.json'
       - 'composer.lock'
-    pull_request:
+  pull_request:
+    paths:
       - '**.php'
       - '.github/workflows/run-tests.yml'
       - 'phpunit.xml.dist'
@@ -19,10 +20,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [8.3]
 
     steps:
       - name: Checkout code
@@ -31,7 +28,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.3
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: xdebug
 
