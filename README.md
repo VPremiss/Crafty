@@ -84,6 +84,17 @@ Below are the tables of all the `Crafty` package helpers:
 
 <br/>
 
+| **Enumerified Function** | Description |
+|--------------------------|-------------|
+| `count(): int` | Returns the count of the enum cases. |
+| `first(): self` | Returns the first enum case. |
+| `random(int $amount = 1, self\|array $exceptFor = [], bool $asArray = false, bool $translated = false): self\|array` | Returns a random enum case or an array of random enum cases, with options to exclude certain cases; possible array results, and translated case names. |
+| `names(self\|array $exceptFor = [], bool $translated = false): array` | Returns an array of enum case names, with options to exclude certain cases and to get the names traslated. |
+| `values(self\|array $exceptFor = [], bool $asString = false): array\|string` | Returns an array of enum case values, with an option to exclude certain cases and to return values as a comma-separated string. |
+| `collection(self\|array $exceptFor = [], bool $translated = true): Collection` | Returns a Laravel collection of enum case names and values, with options to exclude certain cases and to translate case names. |
+
+<br/>
+
 | **Crafty Facade Method**                                                              | Description                                                                                             |
 |---------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `chunkedDatabaseInsertion(string $tableName, array $dataArrays, ?Closure $callback = null): void` | Handles database insertions in chunks with configurable chunk size and default properties.             |
