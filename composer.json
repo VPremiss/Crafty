@@ -57,6 +57,7 @@
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
         "test:coverage": "@test --coverage",
+        "test:parallel": "@test --coverage --parallel",
         "green": [
             "@analyse",
             "@test:coverage"

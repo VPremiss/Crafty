@@ -81,16 +81,16 @@ trait HasInstallationCommand
                 $seederFilePaths = $serviceProvider->seederFilePaths();
                 $aSeederWasNotFound = false;
 
+                $modifiedSeederFilePaths = [];
                 foreach ($seederFilePaths as $path) {
                     if (!File::exists($path)) {
                         $aSeederWasNotFound = true;
                         break;
                     } else {
-                        $seederFilePaths = array_combine($seederFilePaths, [
-                            $path => database_path(str($path)->after('database/')->value()),
-                        ]);
+                        $modifiedSeederFilePaths[$path] = database_path(str($path)->after('database/')->value());
                     }
                 }
+                $seederFilePaths = $modifiedSeederFilePaths;
 
                 if (!$aSeederWasNotFound) {
                     $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");

@@ -6,6 +6,6 @@ namespace VPremiss\Crafty\Utilities\Enumerified\Support\Exceptions;
 
 use Exception;
 
-class EnumerifiedDuplicateEnumsException extends Exception
+class EnumerifiedEnumException extends Exception
 {
 }
