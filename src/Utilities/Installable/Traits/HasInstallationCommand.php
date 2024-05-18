@@ -39,7 +39,7 @@ trait HasInstallationCommand
             );
         }
 
-        Artisan::command("{$serviceProvider->packageShortName()}:install", function () use ($serviceProvider) {
+        Artisan::command("{$serviceProvider->packageShortName()}:install {--enforced}", function () use ($serviceProvider) {
             $this->hidden = true;
 
             $this->comment('Installing the package...');
@@ -48,7 +48,15 @@ trait HasInstallationCommand
             // * Publishing configuration
             // * =======================
 
-            $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-config"]);
+            $this->callSilently(
+                'vendor:publish',
+                $this->option('enforced')
+                    ? [
+                        '--tag' => "{$serviceProvider->packageShortName()}-config",
+                        '--force',
+                    ]
+                    : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
+            );
 
             $this->comment('Published the config file.');
 
@@ -56,7 +64,15 @@ trait HasInstallationCommand
             // * Publishing migrations
             // * ====================
 
-            $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-migrations"]);
+            $this->callSilently(
+                'vendor:publish',
+                $this->option('enforced')
+                    ? [
+                        '--tag' => "{$serviceProvider->packageShortName()}-migrations",
+                        '--force',
+                    ]
+                    : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
+            );
 
             $this->comment('Published migration files.');
 
@@ -64,7 +80,7 @@ trait HasInstallationCommand
             // * Prompt to run migrations
             // * =======================
 
-            if ($this->confirm('Shall we proceed to run the migrations?', true)) {
+            if ($this->option('enforced') || $this->confirm('Shall we proceed to run the migrations?', true)) {
                 $this->comment('Running migrations...');
 
                 $this->callSilently('migrate');
@@ -96,7 +112,15 @@ trait HasInstallationCommand
                     $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");
 
                     // ? Publishing now
-                    $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-seeders"]);
+                    $this->callSilently(
+                        'vendor:publish',
+                        $this->option('enforced')
+                            ? [
+                                '--tag' => "{$serviceProvider->packageShortName()}-seeders",
+                                '--force',
+                            ]
+                            : ['--tag' => "{$serviceProvider->packageShortName()}-seeders"],
+                    );
 
                     // ? Update the seeders' namespaces afterwards
                     foreach ($seederFilePaths as $path) {
@@ -115,7 +139,7 @@ trait HasInstallationCommand
                     // * Prompt to run seeders
                     // * ====================
 
-                    if ($this->confirm('Shall we run the seeders too?', true)) {
+                    if ($this->option('enforced') || $this->confirm('Shall we run the seeders too?', true)) {
                         foreach ($seederFilePaths as $path) {
                             // * Seed
                             $this->comment('Running seeders.');
@@ -184,7 +208,7 @@ trait HasInstallationCommand
             // * Prompt to star on Github
             // * =======================
 
-            if ($this->confirm('Would you kindly star our package on GitHub?', true)) {
+            if ($this->confirm('Would you kindly star our package on GitHub?', $this->option('enforced') ? false : true)) {
                 $packageUrl = "https://github.com/vpremiss/{$serviceProvider->packageShortName()}";
 
                 if (PHP_OS_FAMILY == 'Darwin') {
