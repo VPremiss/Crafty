@@ -62,7 +62,7 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
             );
 
-            $this->copyToWorkbenchSkeleton(AssetType::Config);
+            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config);
 
             $this->comment('Published the config file.');
 
@@ -80,7 +80,7 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
             );
 
-            $this->copyToWorkbenchSkeleton(AssetType::Migration);
+            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration);
 
             $this->comment('Published migration files.');
 
@@ -141,7 +141,7 @@ trait HasInstallationCommand
                         }
                     }
 
-                    $this->copyToWorkbenchSkeleton(AssetType::Seeder);
+                    $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder);
 
                     $this->comment('Published seeder files.');
 
