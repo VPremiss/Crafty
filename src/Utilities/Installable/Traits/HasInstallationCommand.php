@@ -32,6 +32,32 @@ trait HasInstallationCommand
         return (new ReflectionClass($this))->getNamespaceName();
     }
 
+    public function copyToWorkbenchSkeleton(AssetType $type): void
+    {
+        $directory = match ($type) {
+            AssetType::Config => 'config',
+            AssetType::Migration => 'database/migrations',
+            AssetType::Seeder => 'database/seeders',
+        };
+
+        $workbenchSkeletonPath = workbench_path();
+        $publishedPath = base_path("vendor/orchestra/testbench-core/laravel/{$directory}");
+        $destinationPath = "{$workbenchSkeletonPath}/{$directory}";
+
+        if (File::exists($publishedPath)) {
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            $files = Finder::create()->files()->in($publishedPath);
+
+            foreach ($files as $file) {
+                $destFilePath = $destinationPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
+                File::copy($file->getRealPath(), $destFilePath);
+            }
+        }
+    }
+
     // ? Apply in the bootingPackage method
     public function installationCommand(): void
     {
@@ -234,31 +260,5 @@ trait HasInstallationCommand
 
             $this->comment('Arabicable installation complete.');
         });
-    }
-
-    protected function copyToWorkbenchSkeleton(AssetType $type): void
-    {
-        $directory = match ($type) {
-            AssetType::Config => 'config',
-            AssetType::Migration => 'database/migrations',
-            AssetType::Seeder => 'database/seeders',
-        };
-
-        $workbenchSkeletonPath = workbench_path();
-        $publishedPath = base_path("vendor/orchestra/testbench-core/laravel/{$directory}");
-        $destinationPath = "{$workbenchSkeletonPath}/{$directory}";
-
-        if (File::exists($publishedPath)) {
-            if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0755, true);
-            }
-
-            $files = Finder::create()->files()->in($publishedPath);
-
-            foreach ($files as $file) {
-                $destFilePath = $destinationPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
-                File::copy($file->getRealPath(), $destFilePath);
-            }
-        }
     }
 }
