@@ -54,17 +54,12 @@ trait HasInstallationCommand
             foreach ($files as $file) {
                 $destFilePath = $destinationPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
 
-                if ($type === AssetType::Migration) {
+                if ($type === AssetType::Migration && $isEnforced) {
                     $destFileName = pathinfo($destFilePath, PATHINFO_FILENAME);
+                    $destFilePattern = "{$destinationPath}/*_{$destFileName}.php";
 
-                    if (!$isEnforced && File::exists($destFilePath)) {
-                        continue;
-                    }
-
-                    if ($isEnforced) {
-                        foreach (File::glob("{$destinationPath}/*_{$destFileName}.php") as $existingFile) {
-                            File::delete($existingFile);
-                        }
+                    foreach (File::glob($destFilePattern) as $existingFile) {
+                        File::delete($existingFile);
                     }
                 }
 
@@ -107,7 +102,7 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
             );
 
-            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config);
+            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config, $this->option('enforced'));
 
             $this->comment('Published the config file.');
 
@@ -125,7 +120,7 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
             );
 
-            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration);
+            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration, $this->option('enforced'));
 
             $this->comment('Published migration files.');
 
@@ -186,7 +181,7 @@ trait HasInstallationCommand
                         }
                     }
 
-                    $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder);
+                    $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder, $this->option('enforced'));
 
                     $this->comment('Published seeder files.');
 
