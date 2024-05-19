@@ -32,7 +32,7 @@ trait HasInstallationCommand
         return (new ReflectionClass($this))->getNamespaceName();
     }
 
-    public function copyToWorkbenchSkeleton(AssetType $type, bool $isEnforced = true): void
+    public function copyToWorkbenchSkeleton(AssetType $type): void
     {
         $directory = match ($type) {
             AssetType::Config => 'config',
@@ -54,17 +54,15 @@ trait HasInstallationCommand
             foreach ($files as $file) {
                 $destFilePath = $destinationPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
 
-                if ($type === AssetType::Migration && $isEnforced) {
-                    $destFileName = pathinfo($destFilePath, PATHINFO_FILENAME);
-                    $destFilePattern = "{$destinationPath}/*_{$destFileName}.php";
+                if ($type === AssetType::Migration) {
+                    $filenameParts = explode('_', pathinfo($file->getFilename(), PATHINFO_FILENAME));
+                    $destFileName = implode('_', array_slice($filenameParts, 4));
+                    $destFilePattern = "{$destinationPath}/*_*_*_*_{$destFileName}.php";
 
-                    foreach (File::glob($destFilePattern) as $existingFile) {
+                    $existingFiles = File::glob($destFilePattern);
+                    foreach ($existingFiles as $existingFile) {
                         File::delete($existingFile);
                     }
-                }
-
-                if (!$isEnforced && File::exists($destFilePath)) {
-                    continue;
                 }
 
                 File::copy($file->getRealPath(), $destFilePath);
@@ -102,7 +100,9 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
             );
 
-            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config, $this->option('enforced'));
+            if ($this->option('enforced')) {
+                $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config);
+            }
 
             $this->comment('Published the config file.');
 
@@ -120,7 +120,9 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
             );
 
-            $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration, $this->option('enforced'));
+            if ($this->option('enforced')) {
+                $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration);
+            }
 
             $this->comment('Published migration files.');
 
@@ -181,7 +183,9 @@ trait HasInstallationCommand
                         }
                     }
 
-                    $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder, $this->option('enforced'));
+                    if ($this->option('enforced')) {
+                        $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder);
+                    }
 
                     $this->comment('Published seeder files.');
 
