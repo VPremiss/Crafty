@@ -7,8 +7,12 @@ namespace VPremiss\Crafty\Utilities\Installable\Traits;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use ReflectionClass;
+use Symfony\Component\Finder\Finder;
+use VPremiss\Crafty\Utilities\Installable\Enums\AssetType;
 use VPremiss\Crafty\Utilities\Installable\Interfaces\Installable;
 use VPremiss\Crafty\Utilities\Installable\Support\Exceptions\InstallableInterfaceException;
+
+use function Orchestra\Testbench\workbench_path;
 
 // ? A package-tools service provider's
 trait HasInstallationCommand
@@ -28,6 +32,44 @@ trait HasInstallationCommand
         return (new ReflectionClass($this))->getNamespaceName();
     }
 
+    public function copyToWorkbenchSkeleton(AssetType $type): void
+    {
+        $directory = match ($type) {
+            AssetType::Config => 'config',
+            AssetType::Migration => 'database/migrations',
+            AssetType::Seeder => 'database/seeders',
+        };
+
+        $workbenchSkeletonPath = workbench_path();
+        $publishedPath = base_path("vendor/orchestra/testbench-core/laravel/{$directory}");
+        $destinationPath = "{$workbenchSkeletonPath}/{$directory}";
+
+        if (File::exists($publishedPath)) {
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            $files = Finder::create()->files()->in($publishedPath);
+
+            foreach ($files as $file) {
+                $destFilePath = $destinationPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
+
+                if ($type === AssetType::Migration) {
+                    $filenameParts = explode('_', pathinfo($file->getFilename(), PATHINFO_FILENAME));
+                    $destFileName = implode('_', array_slice($filenameParts, 4));
+                    $destFilePattern = "{$destinationPath}/*_*_*_*_{$destFileName}.php";
+
+                    $existingFiles = File::glob($destFilePattern);
+                    foreach ($existingFiles as $existingFile) {
+                        File::delete($existingFile);
+                    }
+                }
+
+                File::copy($file->getRealPath(), $destFilePath);
+            }
+        }
+    }
+
     // ? Apply in the bootingPackage method
     public function installationCommand(): void
     {
@@ -39,7 +81,7 @@ trait HasInstallationCommand
             );
         }
 
-        Artisan::command("{$serviceProvider->packageShortName()}:install", function () use ($serviceProvider) {
+        Artisan::command("{$serviceProvider->packageShortName()}:install {--enforced}", function () use ($serviceProvider) {
             $this->hidden = true;
 
             $this->comment('Installing the package...');
@@ -48,7 +90,19 @@ trait HasInstallationCommand
             // * Publishing configuration
             // * =======================
 
-            $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-config"]);
+            $this->callSilently(
+                'vendor:publish',
+                $this->option('enforced')
+                    ? [
+                        '--tag' => "{$serviceProvider->packageShortName()}-config",
+                        '--force',
+                    ]
+                    : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
+            );
+
+            if ($this->option('enforced')) {
+                $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config);
+            }
 
             $this->comment('Published the config file.');
 
@@ -56,7 +110,19 @@ trait HasInstallationCommand
             // * Publishing migrations
             // * ====================
 
-            $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-migrations"]);
+            $this->callSilently(
+                'vendor:publish',
+                $this->option('enforced')
+                    ? [
+                        '--tag' => "{$serviceProvider->packageShortName()}-migrations",
+                        '--force',
+                    ]
+                    : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
+            );
+
+            if ($this->option('enforced')) {
+                $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration);
+            }
 
             $this->comment('Published migration files.');
 
@@ -64,7 +130,7 @@ trait HasInstallationCommand
             // * Prompt to run migrations
             // * =======================
 
-            if ($this->confirm('Shall we proceed to run the migrations?', true)) {
+            if ($this->option('enforced') || $this->confirm('Shall we proceed to run the migrations?', true)) {
                 $this->comment('Running migrations...');
 
                 $this->callSilently('migrate');
@@ -96,7 +162,15 @@ trait HasInstallationCommand
                     $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");
 
                     // ? Publishing now
-                    $this->callSilently('vendor:publish', ['--tag' => "{$serviceProvider->packageShortName()}-seeders"]);
+                    $this->callSilently(
+                        'vendor:publish',
+                        $this->option('enforced')
+                            ? [
+                                '--tag' => "{$serviceProvider->packageShortName()}-seeders",
+                                '--force',
+                            ]
+                            : ['--tag' => "{$serviceProvider->packageShortName()}-seeders"],
+                    );
 
                     // ? Update the seeders' namespaces afterwards
                     foreach ($seederFilePaths as $path) {
@@ -109,13 +183,17 @@ trait HasInstallationCommand
                         }
                     }
 
+                    if ($this->option('enforced')) {
+                        $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder);
+                    }
+
                     $this->comment('Published seeder files.');
 
                     // * ======================
                     // * Prompt to run seeders
                     // * ====================
 
-                    if ($this->confirm('Shall we run the seeders too?', true)) {
+                    if ($this->option('enforced') || $this->confirm('Shall we run the seeders too?', true)) {
                         foreach ($seederFilePaths as $path) {
                             // * Seed
                             $this->comment('Running seeders.');
@@ -184,7 +262,7 @@ trait HasInstallationCommand
             // * Prompt to star on Github
             // * =======================
 
-            if ($this->confirm('Would you kindly star our package on GitHub?', true)) {
+            if ($this->confirm('Would you kindly star our package on GitHub?', $this->option('enforced') ? false : true)) {
                 $packageUrl = "https://github.com/vpremiss/{$serviceProvider->packageShortName()}";
 
                 if (PHP_OS_FAMILY == 'Darwin') {
