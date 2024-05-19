@@ -32,7 +32,7 @@ trait HasInstallationCommand
         return (new ReflectionClass($this))->getNamespaceName();
     }
 
-    public function copyToWorkbenchSkeleton(AssetType $type): void
+    public function copyToWorkbenchSkeleton(AssetType $type, bool $isEnforced = true): void
     {
         $directory = match ($type) {
             AssetType::Config => 'config',
@@ -53,6 +53,25 @@ trait HasInstallationCommand
 
             foreach ($files as $file) {
                 $destFilePath = $destinationPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
+
+                if ($type === AssetType::Migration) {
+                    $destFileName = pathinfo($destFilePath, PATHINFO_FILENAME);
+
+                    if (!$isEnforced && File::exists($destFilePath)) {
+                        continue;
+                    }
+
+                    if ($isEnforced) {
+                        foreach (File::glob("{$destinationPath}/*_{$destFileName}.php") as $existingFile) {
+                            File::delete($existingFile);
+                        }
+                    }
+                }
+
+                if (!$isEnforced && File::exists($destFilePath)) {
+                    continue;
+                }
+
                 File::copy($file->getRealPath(), $destFilePath);
             }
         }
