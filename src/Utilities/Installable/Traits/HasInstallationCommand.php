@@ -201,7 +201,7 @@ trait HasInstallationCommand
                 // * ====================
 
                 // ? Seeders are supposed to be ran during tests and with Pest hooks and RefreshDatabase in mind
-                if ((!$inTesting && $isEnforced) || ($isEnforced || $this->confirm('Shall we run the seeders too?', true))) {
+                if (!$inTesting && ($isEnforced || $this->confirm('Shall we run the seeders too?', true))) {
                     foreach ($seederFilePaths as $path) {
                         // * Seed
                         $this->comment('Running seeders.');
