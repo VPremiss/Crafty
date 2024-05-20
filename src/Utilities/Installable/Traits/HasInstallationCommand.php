@@ -63,6 +63,12 @@ trait HasInstallationCommand
                     foreach ($existingFiles as $existingFile) {
                         File::delete($existingFile);
                     }
+                } elseif ($type === AssetType::Seeder) {
+                    $fileContent = File::get($file->getRealPath());
+                    $modifiedContent = preg_replace('/namespace\s+.*;/', 'namespace Workbench\Database\Seeders;', $fileContent);
+
+                    File::put($destFilePath, $modifiedContent);
+                    continue;
                 }
 
                 File::copy($file->getRealPath(), $destFilePath);
@@ -81,7 +87,10 @@ trait HasInstallationCommand
             );
         }
 
-        Artisan::command("{$serviceProvider->packageShortName()}:install {--enforced}", function () use ($serviceProvider) {
+        Artisan::command("{$serviceProvider->packageShortName()}:install {--enforced} {--testing}", function () use ($serviceProvider) {
+            $inTesting = $this->option('testing'); // || app()->environment('testing');
+            $isEnforced = $this->option('enforced');
+
             $this->hidden = true;
 
             $this->comment('Installing the package...');
@@ -92,7 +101,7 @@ trait HasInstallationCommand
 
             $this->callSilently(
                 'vendor:publish',
-                $this->option('enforced')
+                $isEnforced
                     ? [
                         '--tag' => "{$serviceProvider->packageShortName()}-config",
                         '--force',
@@ -100,7 +109,7 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
             );
 
-            if ($this->option('enforced')) {
+            if ($inTesting) {
                 $serviceProvider->copyToWorkbenchSkeleton(AssetType::Config);
             }
 
@@ -112,7 +121,7 @@ trait HasInstallationCommand
 
             $this->callSilently(
                 'vendor:publish',
-                $this->option('enforced')
+                $isEnforced
                     ? [
                         '--tag' => "{$serviceProvider->packageShortName()}-migrations",
                         '--force',
@@ -120,7 +129,7 @@ trait HasInstallationCommand
                     : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
             );
 
-            if ($this->option('enforced')) {
+            if ($inTesting) {
                 $serviceProvider->copyToWorkbenchSkeleton(AssetType::Migration);
             }
 
@@ -130,7 +139,7 @@ trait HasInstallationCommand
             // * Prompt to run migrations
             // * =======================
 
-            if ($this->option('enforced') || $this->confirm('Shall we proceed to run the migrations?', true)) {
+            if ($inTesting || $isEnforced || $this->confirm('Shall we proceed to run the migrations?', true)) {
                 $this->comment('Running migrations...');
 
                 $this->callSilently('migrate');
@@ -138,131 +147,126 @@ trait HasInstallationCommand
                 $this->comment('Migrated successfully.');
             }
 
-            if (!app()->environment('testing') || env('IN_CI', false)) {
+            // * ===================
+            // * Publishing seeders
+            // * =================
 
-                // * ===================
-                // * Publishing seeders
-                // * =================
+            $seederFilePaths = $serviceProvider->seederFilePaths();
+            $aSeederWasNotFound = false;
 
-                $seederFilePaths = $serviceProvider->seederFilePaths();
-                $aSeederWasNotFound = false;
+            $modifiedSeederFilePaths = [];
+            foreach ($seederFilePaths as $path) {
+                if (!File::exists($path)) {
+                    $aSeederWasNotFound = true;
+                    break;
+                } else {
+                    $modifiedSeederFilePaths[$path] = database_path(str($path)->after('database/')->value());
+                }
+            }
+            $seederFilePaths = $modifiedSeederFilePaths;
 
-                $modifiedSeederFilePaths = [];
+            if (!$aSeederWasNotFound) {
+                $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");
+
+                // ? Publishing now
+                $this->callSilently(
+                    'vendor:publish',
+                    $isEnforced
+                        ? [
+                            '--tag' => "{$serviceProvider->packageShortName()}-seeders",
+                            '--force',
+                        ]
+                        : ['--tag' => "{$serviceProvider->packageShortName()}-seeders"],
+                );
+
+                // ? Update the seeders' namespaces afterwards
                 foreach ($seederFilePaths as $path) {
-                    if (!File::exists($path)) {
-                        $aSeederWasNotFound = true;
-                        break;
-                    } else {
-                        $modifiedSeederFilePaths[$path] = database_path(str($path)->after('database/')->value());
+                    $fileContents = File::get($path);
+                    $correctNamespace = "namespace Database\Seeders;";
+                    $namespacePattern = '/^namespace\s+([a-zA-Z0-9\\\]+);/m';
+
+                    if (preg_match($namespacePattern, $fileContents, $matches)) {
+                        File::put($path, preg_replace($namespacePattern, $correctNamespace, $fileContents));
                     }
                 }
-                $seederFilePaths = $modifiedSeederFilePaths;
 
-                if (!$aSeederWasNotFound) {
-                    $serviceProvider->packagePublishes($seederFilePaths, "{$serviceProvider->packageShortName()}-seeders");
+                if ($inTesting) {
+                    $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder);
+                }
 
-                    // ? Publishing now
-                    $this->callSilently(
-                        'vendor:publish',
-                        $this->option('enforced')
-                            ? [
-                                '--tag' => "{$serviceProvider->packageShortName()}-seeders",
-                                '--force',
-                            ]
-                            : ['--tag' => "{$serviceProvider->packageShortName()}-seeders"],
-                    );
+                $this->comment('Published seeder files.');
 
-                    // ? Update the seeders' namespaces afterwards
+                // * ======================
+                // * Prompt to run seeders
+                // * ====================
+
+                if ($inTesting || $isEnforced || $this->confirm('Shall we run the seeders too?', true)) {
                     foreach ($seederFilePaths as $path) {
-                        $fileContents = File::get($path);
-                        $correctNamespace = "namespace Database\Seeders;";
-                        $namespacePattern = '/^namespace\s+([a-zA-Z0-9\\\]+);/m';
+                        // * Seed
+                        $this->comment('Running seeders.');
 
-                        if (preg_match($namespacePattern, $fileContents, $matches)) {
-                            File::put($path, preg_replace($namespacePattern, $correctNamespace, $fileContents));
+                        $namespace = $serviceProvider->getPackageNamespace();
+                        $className = str($path)->after('seeders/')->before('.php')->value();
+                        $className = "{$namespace}\\Database\\Seeders\\$className";
+
+                        if (env('IN_CI', false)) {
+                            require_once $path;
+
+                            $seeder = new $className;
+                            $seeder->run();
+                        } else {
+                            $this->callSilently('db:seed', [
+                                '--class' => $className,
+                                '--force' => true
+                            ]);
                         }
+
+                        $this->comment('Seeded successfully.');
                     }
+                }
 
-                    if ($this->option('enforced')) {
-                        $serviceProvider->copyToWorkbenchSkeleton(AssetType::Seeder);
-                    }
+                // * ===================================
+                // * Add seeders to DatabaseSeeder file
+                // * =================================
 
-                    $this->comment('Published seeder files.');
+                if (File::exists($databaseSeederPath = database_path("seeders/DatabaseSeeder.php"))) {
+                    $fileContents = File::get($databaseSeederPath);
+                    $addedClasses = [];
 
-                    // * ======================
-                    // * Prompt to run seeders
-                    // * ====================
+                    foreach ($seederFilePaths as $path) {
+                        $className = str($path)->after('seeders/')->before('.php')->value();
+                        $seederClassStatement = "\$this->call({$className}::class);";
 
-                    if ($this->option('enforced') || $this->confirm('Shall we run the seeders too?', true)) {
-                        foreach ($seederFilePaths as $path) {
-                            // * Seed
-                            $this->comment('Running seeders.');
+                        // ? Use a regular expression to find the exact place to insert the new seeder call
+                        if (!in_array($className, $addedClasses) && strpos($fileContents, $seederClassStatement) === false) {
+                            // ? This pattern accounts for the possible existing empty line
+                            $pattern = '/(public function run\(\): void\s*{\s*\n)(\s*)/';
 
-                            $namespace = $serviceProvider->getPackageNamespace();
-                            $className = str($path)->after('seeders/')->before('.php')->value();
-                            $className = "{$namespace}\\Database\\Seeders\\$className";
+                            if (preg_match($pattern, $fileContents, $matches)) {
+                                // ? Capture the indentation level to maintain formatting consistency
+                                $indentation = $matches[2];
+                                $replacement = $matches[1] . $indentation . $seederClassStatement . "\n" . $indentation;
 
-                            if (env('IN_CI', false)) {
-                                require_once $path;
-
-                                $seeder = new $className;
-                                $seeder->run();
-                            } else {
-                                $this->callSilently('db:seed', [
-                                    '--class' => $className,
-                                    '--force' => true
-                                ]);
-                            }
-
-                            $this->comment('Seeded successfully.');
-                        }
-                    }
-
-                    // * ===================================
-                    // * Add seeders to DatabaseSeeder file
-                    // * =================================
-
-                    if (File::exists($databaseSeederPath = database_path("seeders/DatabaseSeeder.php"))) {
-                        $fileContents = File::get($databaseSeederPath);
-                        $addedClasses = [];
-
-                        foreach ($seederFilePaths as $path) {
-                            $className = str($path)->after('seeders/')->before('.php')->value();
-                            $seederClassStatement = "\$this->call({$className}::class);";
-
-                            // ? Use a regular expression to find the exact place to insert the new seeder call
-                            if (!in_array($className, $addedClasses) && strpos($fileContents, $seederClassStatement) === false) {
-                                // ? This pattern accounts for the possible existing empty line
-                                $pattern = '/(public function run\(\): void\s*{\s*\n)(\s*)/';
-
-                                if (preg_match($pattern, $fileContents, $matches)) {
-                                    // ? Capture the indentation level to maintain formatting consistency
-                                    $indentation = $matches[2];
-                                    $replacement = $matches[1] . $indentation . $seederClassStatement . "\n" . $indentation;
-
-                                    $fileContents = preg_replace($pattern, $replacement, $fileContents, 1);
-                                    $addedClasses[] = $className;
-                                }
+                                $fileContents = preg_replace($pattern, $replacement, $fileContents, 1);
+                                $addedClasses[] = $className;
                             }
                         }
-
-                        // ? Write all the seeders at once
-                        File::put($databaseSeederPath, $fileContents);
-
-                        $this->comment('Added seeder calls in DatabaseSeeder file.');
                     }
-                } else {
-                    $this->error('Seeders publishing failed.');
+
+                    // ? Write all the seeders at once
+                    File::put($databaseSeederPath, $fileContents);
+
+                    $this->comment('Added seeder calls in DatabaseSeeder file.');
                 }
             } else {
-                $this->info("Skipping seeding in testing environment.");
+                $this->error('Seeders publishing failed.');
             }
 
             // * =========================
             // * Prompt to star on Github
             // * =======================
 
-            if ($this->confirm('Would you kindly star our package on GitHub?', $this->option('enforced') ? false : true)) {
+            if ($inTesting || $isEnforced || $this->confirm('Would you kindly star our package on GitHub?', true)) {
                 $packageUrl = "https://github.com/vpremiss/{$serviceProvider->packageShortName()}";
 
                 if (PHP_OS_FAMILY == 'Darwin') {
