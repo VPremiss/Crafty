@@ -200,7 +200,8 @@ trait HasInstallationCommand
                 // * Prompt to run seeders
                 // * ====================
 
-                if ($inTesting || $isEnforced || $this->confirm('Shall we run the seeders too?', true)) {
+                // ? Seeders are supposed to be ran during tests and with Pest hooks and RefreshDatabase in mind
+                if ((!$inTesting && $isEnforced) || ($isEnforced || $this->confirm('Shall we run the seeders too?', true))) {
                     foreach ($seederFilePaths as $path) {
                         // * Seed
                         $this->comment('Running seeders.');
@@ -266,7 +267,7 @@ trait HasInstallationCommand
             // * Prompt to star on Github
             // * =======================
 
-            if ($inTesting || $isEnforced || $this->confirm('Would you kindly star our package on GitHub?', true)) {
+            if (!$inTesting && !$isEnforced && $this->confirm('Would you kindly star our package on GitHub?', true)) {
                 $packageUrl = "https://github.com/vpremiss/{$serviceProvider->packageShortName()}";
 
                 if (PHP_OS_FAMILY == 'Darwin') {
