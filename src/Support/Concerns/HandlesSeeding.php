@@ -23,8 +23,7 @@ trait HandlesSeeding
             ->map(fn ($path) => [str($path)->after('seeders/')->before('.php')->value() => $path])
             ->toArray();
 
-        // @phpstan-ignore-next-line
-        $namespace = $serviceProvider->getPackageNamespace();
+        $namespace = $serviceProvider->packageNamespace();
         $seederPath = $seeders[$seederName];
         $seederClassName = array_search($seederPath, $seeders);
         $seederClassName = "{$namespace}\\Database\\Seeders\\$seederClassName";
