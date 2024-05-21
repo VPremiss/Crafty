@@ -108,6 +108,7 @@ Below are the tables of all the `Crafty` package helpers:
 | `getConfiguration(string $key, $default = null): mixed`                                             | Returns the package configuration value gracefully **after validation**. Still, you **must** implement [Configurated](src/Utilities/Configurated/Interfaces/Configurated.php) interface and [ManagesConfigurations](src/Utilities/Configurated/Traits/ManagesConfigurations.php) methods for it to work. |
 | `setConfiguration(string $key, mixed $value):  void`                                                | Sets a configuration value for a specified key. This method does not validate the value itself; use `setConfigurationValidation` to establish value constraints. Requires Configurated interface too. |
 | `setConfigurationValidation(string $key, callable $closure): void`                                 | Registers a validation function for a specific configuration key. The function is called to validate the value each time it is set using `setConfiguration`. Requires Configurated interface too. |
+| `seed(string $serviceProviderNamespace, string $seederName): void`                                 | Runs a package seeder by deriving the class out of Installable's `seederFilePaths()` in order to `run()` it manually. |
 
 <br/>
 
