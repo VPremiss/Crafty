@@ -61,6 +61,20 @@ trait HasInstallationCommand
                 File::copy($file->getRealPath(), $destFilePath);
             }
         }
+
+        if ($type === AssetType::Seeder) {
+            $seedersPath = base_path('workbench/database/seeders');
+            $phpFiles = File::glob("{$seedersPath}/*.php");
+
+            foreach ($phpFiles as $file) {
+                $fileContent = File::get($file);
+                $modifiedContent = preg_replace('/namespace\s+.*;/', 'namespace Workbench\Database\Seeders;', $fileContent);
+
+                if ($fileContent !== $modifiedContent) {
+                    File::put($file, $modifiedContent);
+                }
+            }
+        }
     }
 
     // ? Apply in the bootingPackage method
