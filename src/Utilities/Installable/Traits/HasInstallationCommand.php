@@ -6,8 +6,8 @@ namespace VPremiss\Crafty\Utilities\Installable\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use ReflectionClass;
 use Symfony\Component\Finder\Finder;
+use VPremiss\Crafty\Traits\HasPackageHelpers;
 use VPremiss\Crafty\Utilities\Installable\Enums\AssetType;
 use VPremiss\Crafty\Utilities\Installable\Interfaces\Installable;
 use VPremiss\Crafty\Utilities\Installable\Support\Exceptions\InstallableInterfaceException;
@@ -17,20 +17,7 @@ use function Orchestra\Testbench\workbench_path;
 // ? A package-tools service provider's
 trait HasInstallationCommand
 {
-    public function packageShortName(): string
-    {
-        return $this->package->shortName();
-    }
-
-    public function packagePublishes(array $paths, $tag): void
-    {
-        $this->publishes($paths, $tag);
-    }
-
-    public function getPackageNamespace(): string
-    {
-        return (new ReflectionClass($this))->getNamespaceName();
-    }
+    use HasPackageHelpers;
 
     public function copyToWorkbenchSkeleton(AssetType $type): void
     {
@@ -210,17 +197,10 @@ trait HasInstallationCommand
                         $className = str($path)->after('seeders/')->before('.php')->value();
                         $className = "{$namespace}\\Database\\Seeders\\$className";
 
-                        if (env('IN_CI', false)) {
-                            require_once $path;
-
-                            $seeder = new $className;
-                            $seeder->run();
-                        } else {
-                            $this->callSilently('db:seed', [
-                                '--class' => $className,
-                                '--force' => true
-                            ]);
-                        }
+                        $this->callSilently('db:seed', [
+                            '--class' => $className,
+                            '--force' => true
+                        ]);
 
                         $this->comment('Seeded successfully.');
                     }
