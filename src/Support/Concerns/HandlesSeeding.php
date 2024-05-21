@@ -21,6 +21,7 @@ trait HandlesSeeding
 
         $seeders = collect($serviceProvider->seederFilePaths())
             ->map(fn ($path) => [str($path)->after('seeders/')->before('.php')->value() => $path])
+            ->collapse()
             ->toArray();
 
         $namespace = $serviceProvider->packageNamespace();
