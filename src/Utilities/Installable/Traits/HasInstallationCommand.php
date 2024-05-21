@@ -63,7 +63,7 @@ trait HasInstallationCommand
         }
 
         if ($type === AssetType::Seeder) {
-            $seedersPath = base_path('workbench/database/seeders');
+            $seedersPath = base_path('database/seeders');
             $phpFiles = File::glob("{$seedersPath}/*.php");
 
             foreach ($phpFiles as $file) {
