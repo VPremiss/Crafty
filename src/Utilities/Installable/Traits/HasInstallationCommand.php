@@ -207,7 +207,7 @@ trait HasInstallationCommand
                         // * Seed
                         $this->comment('Running seeders.');
 
-                        $namespace = $serviceProvider->getPackageNamespace();
+                        $namespace = $serviceProvider->packageNamespace();
                         $className = str($path)->after('seeders/')->before('.php')->value();
                         $className = "{$namespace}\\Database\\Seeders\\$className";
 
