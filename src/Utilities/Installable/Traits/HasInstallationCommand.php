@@ -94,7 +94,8 @@ trait HasInstallationCommand
 
             $this->hidden = true;
 
-            $this->comment('Installing the package...');
+            $this->info('Installing the package...');
+            $this->newLine();
 
             // * =========================
             // * Publishing configuration
@@ -105,7 +106,7 @@ trait HasInstallationCommand
                 $isEnforced
                     ? [
                         '--tag' => "{$serviceProvider->packageShortName()}-config",
-                        '--force',
+                        '--force' => true,
                     ]
                     : ['--tag' => "{$serviceProvider->packageShortName()}-config"],
             );
@@ -125,7 +126,7 @@ trait HasInstallationCommand
                 $isEnforced
                     ? [
                         '--tag' => "{$serviceProvider->packageShortName()}-migrations",
-                        '--force',
+                        '--force' => true,
                     ]
                     : ['--tag' => "{$serviceProvider->packageShortName()}-migrations"],
             );
@@ -175,7 +176,7 @@ trait HasInstallationCommand
                     $isEnforced
                         ? [
                             '--tag' => "{$serviceProvider->packageShortName()}-seeders",
-                            '--force',
+                            '--force' => true,
                         ]
                         : ['--tag' => "{$serviceProvider->packageShortName()}-seeders"],
                 );
@@ -213,7 +214,7 @@ trait HasInstallationCommand
 
                         $this->callSilently('db:seed', [
                             '--class' => $className,
-                            '--force' => true
+                            '--force' => true,
                         ]);
 
                         $this->comment('Seeded successfully.');
@@ -275,7 +276,8 @@ trait HasInstallationCommand
                 }
             }
 
-            $this->comment('Arabicable installation complete.');
+            $this->newLine();
+            $this->info('Arabicable installation complete.');
         });
     }
 }
