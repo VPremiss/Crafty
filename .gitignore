@@ -3,5 +3,6 @@
 /node_modules
 /vendor
 /.drafts
-phpunit.xml
+composer.lock
 phpstan.neon
+phpunit.xml
