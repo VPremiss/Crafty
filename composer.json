@@ -45,34 +45,32 @@
         "psr-4": {
             "VPremiss\\Crafty\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "scripts": {
         "post-autoload-dump": [
-            "@clear",
             "@prepare"
         ],
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
-        "test:coverage": "@test --coverage",
-        "test:parallel": "@test --coverage --parallel",
+        "pest": "vendor/bin/pest",
+        "pest:coverage": "@pest --coverage",
+        "test": [
+            "@prepare",
+            "@pest:coverage"
+        ],
         "green": [
             "@analyse",
-            "@test:coverage"
+            "@test"
         ],
         "bench": "vendor/bin/testbench",
-        "bench:install": "@bench workbench:install",
-        "clear": "@bench package:purge-skeleton --ansi",
-        "prepare": "@bench package:discover --ansi",
+        "clean": "@bench package:purge-skeleton --ansi",
+        "clear": "@bench package:discover --ansi",
         "build": "@bench workbench:build --ansi",
-        "serve": [
-            "Composer\\Config::disableProcessTimeout",
+        "prepare": [
+            "@clean",
             "@clear",
-            "@prepare",
-            "@build",
-            "@bench serve"
+            "@build"
         ]
     },
     "config": {
