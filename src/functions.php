@@ -7,6 +7,24 @@ use VPremiss\Crafty\Support\Exceptions\CraftyFunctionDoesNotExistException;
 // * Validation
 // * =========
 
+if (function_exists('is_filled_string')) {
+    throw new CraftyFunctionDoesNotExistException('The crafty function "is_filled_string()" already exists!');
+} else {
+    function is_filled_string($value): bool
+    {
+        return is_string($value) && filled($value);
+    }
+}
+
+if (function_exists('is_associative_array')) {
+    throw new CraftyFunctionDoesNotExistException('The crafty function "is_associative_array()" already exists!');
+} else {
+    function is_associative_array(array $array): bool
+    {
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+}
+
 if (function_exists('is_enum')) {
     throw new CraftyFunctionDoesNotExistException('The crafty function "is_enum()" already exists!');
 } else {
