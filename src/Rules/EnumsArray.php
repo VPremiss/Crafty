@@ -11,7 +11,7 @@ class EnumsArray implements ValidationRule
 {
     public function __construct(
         protected string $enumClass,
-        protected int $itemMaxLength,
+        protected ?int $valueMaxLength = null,
     ) {
     }
 
@@ -36,17 +36,15 @@ class EnumsArray implements ValidationRule
         }
 
         foreach ($value as $index => $item) {
-            $values = collect($this->enumClass::cases())
-                ->pluck('value')
-                ->toArray();
-
-            if (!in_array($item, $values)) {
+            if (!is_enum($item)) {
                 $fail("Item ({$index}) in :attribute must be of type '{$this->enumClass}' enum.");
                 return;
             }
 
-            if (strlen($item) > $this->itemMaxLength) {
-                $fail("Item ({$index}) in :attribute must not be longer than '{$this->itemMaxLength}' characters.");
+            if (!is_null($this->valueMaxLength) && (strlen($item->value()) > $this->valueMaxLength)) {
+                $fail(
+                    "The enum value of the index ({$index}) has longer characters than the maximum allowed ({$this->valueMaxLength}) for :attribute input."
+                );
                 return;
             }
         }
