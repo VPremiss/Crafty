@@ -12,6 +12,8 @@ enum DataType: string
     case Integer = 'integer';
     case Float = 'float';
     case String = 'string';
+    case FilledString = 'filled-string';
+    case Enum = 'enum';
     case Closure = 'closure';
     case Array = 'array';
 
@@ -22,6 +24,8 @@ enum DataType: string
             self::Integer => is_int($data),
             self::Float => is_float($data),
             self::String => is_string($data),
+            self::FilledString => is_string($data) && filled($data),
+            self::Enum => is_enum($data),
             self::Closure => $data instanceof Closure,
             self::Array => is_array($data),
         };

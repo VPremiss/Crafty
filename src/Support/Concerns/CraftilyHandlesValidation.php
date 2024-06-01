@@ -13,10 +13,10 @@ trait CraftilyHandlesValidation
     public function validatedArray(
         array $array,
         DataType $keysOrValuesType,
-        Closure|DataType $valuesTypeOrNestedValidator = null,
+        Closure|DataType|null $valuesTypeOrNestedValidator = null,
     ): bool {
-        if (!is_array($array)) {
-            throw new CraftyValidationException('Array validation helper was not passed an array!');
+        if (!is_array($array) || empty($array)) {
+            throw new CraftyValidationException('Array validation helper was not passed a filled array.');
         }
 
         // ? Non-associative array validation
