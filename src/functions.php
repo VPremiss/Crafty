@@ -28,13 +28,19 @@ if (function_exists('is_associative_array')) {
 if (function_exists('is_enum')) {
     throw new CraftyFunctionDoesNotExistException('The crafty function "is_enum()" already exists!');
 } else {
-    function is_enum(mixed $enum): bool
+    function is_enum(mixed $enum, ?string $namespace = null): bool
     {
         if (!is_object($enum)) {
             return false;
         }
 
-        return enum_exists(get_class($enum));
+        $isEnum = enum_exists(get_class($enum));
+
+        if ($namespace !== null) {
+            return $isEnum && get_class($enum) === $namespace;
+        }
+
+        return $isEnum;
     }
 }
 

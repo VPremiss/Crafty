@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace VPremiss\Crafty\Enums;
 
 use Closure;
+use VPremiss\Crafty\ExtendedEnums\ExtendedSpecificEnumDataType;
+use VPremiss\Crafty\Support\Interfaces\ValidatedDataType;
 
-enum DataType: string
+enum DataType: string implements ValidatedDataType
 {
     case Boolean = 'boolean';
     case Integer = 'integer';
@@ -29,5 +31,10 @@ enum DataType: string
             self::Closure => $data instanceof Closure,
             self::Array => is_array($data),
         };
+    }
+
+    public static function SpecificEnum(string $namespace): ExtendedSpecificEnumDataType
+    {
+        return new ExtendedSpecificEnumDataType($namespace);
     }
 }
