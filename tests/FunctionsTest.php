@@ -59,12 +59,20 @@ it('has a validation is_enum function', function () {
     expect(is_enum('Hi'))->toBeFalse();
     expect(is_enum(74))->toBeFalse();
 
-    enum SomeEnum: string
+    enum NewEnum: string
     {
-        case Test = 'TEST';
+        case Test = 'test';
     }
 
-    expect(is_enum(SomeEnum::Test))->toBeTrue();
+    expect(is_enum(NewEnum::Test))->toBeTrue();
+    
+    enum YetAnotherEnum: string
+    {
+        case AlsoTest = 'also-test';
+    }
+
+    expect(is_enum(NewEnum::Test, YetAnotherEnum::class))->toBeFalse();
+    expect(is_enum(YetAnotherEnum::AlsoTest, YetAnotherEnum::class))->toBeTrue();
 });
 
 it('has a generation unique_meta_hashing_number function', function () {

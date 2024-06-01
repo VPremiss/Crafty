@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace VPremiss\Crafty\Support\Concerns;
 
 use Closure;
-use VPremiss\Crafty\Enums\DataType;
 use VPremiss\Crafty\Support\Exceptions\CraftyValidationException;
+use VPremiss\Crafty\Support\Interfaces\ValidatedDataType;
 
 trait CraftilyHandlesValidation
 {
     public function validatedArray(
         array $array,
-        DataType $keysOrValuesType,
-        Closure|DataType|null $valuesTypeOrNestedValidator = null,
+        ValidatedDataType $keysOrValuesType,
+        Closure|ValidatedDataType|null $valuesTypeOrNestedValidator = null,
     ): bool {
         if (!is_array($array) || empty($array)) {
             throw new CraftyValidationException('Array validation helper was not passed a filled array.');

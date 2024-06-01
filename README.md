@@ -100,7 +100,7 @@ Below are the tables of all the `Crafty` package helpers:
 | `chunkedDatabaseInsertion(string $tableName, array $dataArrays, ?Closure $callback = null): void` | Handles database insertions in chunks with configurable chunk size and default properties.             |
 | `uniquelyMetaHashSuffixed(string $string): string`                          | Appends a unique hash suffix to a string. Utilizes the global helper function `unique_meta_hashing_number` of this same package.                                                               |
 | `reverseString(string $string, EncodingType $encoding = EncodingType::UTF8): string` | Reverses a string according to the specified encoding type.                                             |
-| `validatedArray(array $array, DataType $keysOrValuesType, Closure\|DataType\|null $valuesTypeOrNestedValidator = null): bool` | A decent way of validating arrays and associative arrays real quick. Check out the [CraftyTest.php](./tests/CraftyTest.php#L45) for examples.                                             |
+| `validatedArray(array $array, ValidatedDataType $keysOrValuesType, Closure\|ValidatedDataType\|null $valuesTypeOrNestedValidator = null): bool` | A decent way of validating arrays and associative arrays real quick. Check out the [CraftyTest.php](./tests/CraftyTest.php#L45) for examples.                                             |
 
 <br/>
 

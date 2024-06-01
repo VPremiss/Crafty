@@ -47,8 +47,25 @@ it('has a decent array validation method', function () {
     expect(Crafty::validatedArray([1, 2, 'c'], DataType::Integer))->toBeFalse();
     expect(Crafty::validatedArray(['a', '2', 'b'], DataType::String))->toBeTrue();
     expect(Crafty::validatedArray(['a', '2', 22], DataType::String))->toBeFalse();
+    expect(Crafty::validatedArray([' ', '  ', '   '], DataType::FilledString))->toBeFalse();
+    expect(Crafty::validatedArray([' .', '  .', '   .'], DataType::FilledString))->toBeTrue();
     expect(Crafty::validatedArray([[], [], []], DataType::Array))->toBeTrue();
     expect(Crafty::validatedArray([[], [], false], DataType::Array))->toBeFalse();
+
+    enum SomeEnum: string
+    {
+        case Test = 'test';
+        case Tester = 'tester';
+    }
+
+    enum AnotherEnum: string
+    {
+        case AlsoTesting = 'also-testing';
+    }
+
+    expect(Crafty::validatedArray([SomeEnum::Test, SomeEnum::Tester], DataType::Enum))->toBeTrue();
+    expect(Crafty::validatedArray([SomeEnum::Test, SomeEnum::Tester], DataType::SpecificEnum(AnotherEnum::class)))->toBeFalse();
+    expect(Crafty::validatedArray([SomeEnum::Test, SomeEnum::Tester], DataType::SpecificEnum(SomeEnum::class)))->toBeTrue();
 
     expect(Crafty::validatedArray([2 => 3.8, 3 => 2.77, 4 => 1.0], DataType::Integer, DataType::Float))->toBeTrue();
     expect(Crafty::validatedArray(['a' => 3.8, 'b' => 2.77, 'z' => 1.0], DataType::Integer, DataType::Float))->toBeFalse();
