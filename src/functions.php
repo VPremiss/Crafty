@@ -1,14 +1,14 @@
 <?php
 
 use VPremiss\Crafty\Facades\CraftyPackage;
-use VPremiss\Crafty\Support\Exceptions\CraftyFunctionDoesNotExistException;
+use VPremiss\Crafty\Support\Exceptions\CraftyFunctionException;
 
 // * ===========
 // * Validation
 // * =========
 
 if (function_exists('is_filled_string')) {
-    throw new CraftyFunctionDoesNotExistException('The crafty function "is_filled_string()" already exists!');
+    throw new CraftyFunctionException('The crafty function "is_filled_string()" already exists!');
 } else {
     function is_filled_string($value): bool
     {
@@ -17,7 +17,7 @@ if (function_exists('is_filled_string')) {
 }
 
 if (function_exists('is_associative_array')) {
-    throw new CraftyFunctionDoesNotExistException('The crafty function "is_associative_array()" already exists!');
+    throw new CraftyFunctionException('The crafty function "is_associative_array()" already exists!');
 } else {
     function is_associative_array(array $array): bool
     {
@@ -26,7 +26,7 @@ if (function_exists('is_associative_array')) {
 }
 
 if (function_exists('is_enum')) {
-    throw new CraftyFunctionDoesNotExistException('The crafty function "is_enum()" already exists!');
+    throw new CraftyFunctionException('The crafty function "is_enum()" already exists!');
 } else {
     function is_enum(mixed $enum, ?string $namespace = null): bool
     {
@@ -57,7 +57,7 @@ if (function_exists('is_enum')) {
 // * =========
 
 if (function_exists('unique_meta_hashing_number')) {
-    throw new CraftyFunctionDoesNotExistException('The crafty function "unique_meta_hashing_number()" already exists!');
+    throw new CraftyFunctionException('The crafty function "unique_meta_hashing_number()" already exists!');
 } else {
     function unique_meta_hashing_number(string $string, ?int $digits = null): string
     {

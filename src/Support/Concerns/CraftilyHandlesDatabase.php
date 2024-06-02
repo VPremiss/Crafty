@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use VPremiss\Crafty\Facades\CraftyPackage;
-use VPremiss\Crafty\Support\Exceptions\CraftyChunkedDatabaseInsertCallbackException;
+use VPremiss\Crafty\Support\Exceptions\CraftyDatabaseException;
 
 trait CraftilyHandlesDatabase
 {
@@ -29,7 +29,7 @@ trait CraftilyHandlesDatabase
                     $callbackData = $callback($dataArray);
 
                     if (!is_array($callbackData)) {
-                        throw new CraftyChunkedDatabaseInsertCallbackException(
+                        throw new CraftyDatabaseException(
                             'The callback must return an array for each data arrays item.'
                         );
                     }
@@ -39,7 +39,7 @@ trait CraftilyHandlesDatabase
                     }, ARRAY_FILTER_USE_KEY);
 
                     if (empty($validatedData)) {
-                        throw new CraftyChunkedDatabaseInsertCallbackException(
+                        throw new CraftyDatabaseException(
                             "The callback array item does not return valid keys for the '$tableName' table."
                         );
                     }
