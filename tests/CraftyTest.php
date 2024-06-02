@@ -4,31 +4,60 @@ declare(strict_types=1);
 
 use VPremiss\Crafty\Enums\DataType;
 use VPremiss\Crafty\Facades\Crafty;
+use VPremiss\Crafty\Support\Exceptions\CraftyFilteringException;
 use Workbench\App\Models\Person;
 use Workbench\Database\Seeders\PersonSeeder;
 
 use function Pest\Laravel\seed;
 
-it('has a chunkedDatabaseInsertion method that handles exactly that', function () {
-    seed(PersonSeeder::class);
+describe('CraftilyHandlesDatabase trait → chunkedDatabaseInsertion function', function () {
+    it('handles performant database customizable insertion through chunking', function () {
+        seed(PersonSeeder::class);
 
-    expect(Person::count())->toBe(2); // ? Check the seeder
+        expect(Person::count())->toBe(2); // ? Check the seeder
+    });
+
+    // TODO test failure
 });
 
-it('has a uniquelyMetaHashSuffixed method that appends a unique hash to strings', function () {
-    $results = [];
+describe('CraftilyHandlesFiltering trait → filterProps function', function () {
+    it("filters for 'only' and 'except' criteria or defaulting to whatever 'all' is", function () {
+        $array = ['1', '2', 'threeeeee'];
 
-    for ($i = 0; $i < 100; $i++) {
-        $result = Crafty::uniquelyMetaHashSuffixed('test_string');
+        expect(Crafty::filterProps($array, '2'))->toBe(['2']);
+        expect(Crafty::filterProps($array, except: 'threeeeee'))->toBe(['1', '2']);
+        expect(Crafty::filterProps($array))->toBe(['1', '2', 'threeeeee']);
 
-        expect($results)->not->toContain($result);
+        expect(Crafty::filterProps(collect($array), except: ['1', '2']))->toBe(['threeeeee']);
+    });
 
-        $results[] = $result;
+    it("throws when both 'only' and 'except' are used", function () {
+        $array = ['1', '2', 'threeeeee'];
 
-        expect($results[array_rand($results)])->toContain('test_string');
-    }
+        expect(Crafty::filterProps($array, '2', 'three'))->toThrow(
+            CraftyFilteringException::class,
+            "You shouldn't use both `except` and `only` arguments, only one of them.",
+        );
+    })->throws(CraftyFilteringException::class);
 });
 
+describe('CraftilyHandlesGeneration trait → uniquelyMetaHashSuffixed function', function () {
+    it('appends a unique hash to strings', function () {
+        $results = [];
+    
+        for ($i = 0; $i < 100; $i++) {
+            $result = Crafty::uniquelyMetaHashSuffixed('test_string');
+    
+            expect($results)->not->toContain($result);
+    
+            $results[] = $result;
+    
+            expect($results[array_rand($results)])->toContain('test_string');
+        }
+    });
+});
+
+// TODO group
 it('has a reverseString method that works for multibyte strings', function () {
     $arabicText = <<<Arabic
 وإنّي وإنِّي ثم إنّي وإنَّنِي ... إذا انقطعت نعلي جعلت لها شسعا
@@ -42,6 +71,7 @@ Arabic;
     expect($result)->toBe($reversedArabicText);
 });
 
+// TODO group
 it('has a decent array validation method', function () {
     expect(Crafty::validatedArray([1, 2, 3], DataType::Integer))->toBeTrue();
     expect(Crafty::validatedArray([1, 2, 'c'], DataType::Integer))->toBeFalse();

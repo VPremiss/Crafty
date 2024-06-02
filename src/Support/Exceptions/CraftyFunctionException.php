@@ -6,6 +6,6 @@ namespace VPremiss\Crafty\Support\Exceptions;
 
 use Exception;
 
-class CraftyChunkedDatabaseInsertCallbackException extends Exception
+class CraftyFunctionException extends Exception
 {
 }
